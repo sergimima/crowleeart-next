@@ -12,6 +12,7 @@ export default function LoginPage() {
     name: '',
     email: '',
     password: '',
+    confirmPassword: '',
     address: '',
     phone: '',
   })
@@ -23,15 +24,27 @@ export default function LoginPage() {
   }
 
   const validateForm = () => {
-    const { name, email, password, phone } = formData
+    const { name, email, password, confirmPassword, phone } = formData
 
     if (!email.trim().includes('@')) {
       toast.error('Invalid email address.')
       return false
     }
     if (isRegister) {
-      if (password.trim().length < 6) {
-        toast.error('Password must be at least 6 characters.')
+      if (password.trim().length < 8) {
+        toast.error('Password must be at least 8 characters.')
+        return false
+      }
+      if (!/[A-Z]/.test(password)) {
+        toast.error('Password must contain at least one uppercase letter.')
+        return false
+      }
+      if (!/[0-9]/.test(password)) {
+        toast.error('Password must contain at least one number.')
+        return false
+      }
+      if (password !== confirmPassword) {
+        toast.error('Passwords do not match.')
         return false
       }
       if (!/^\d+$/.test(phone.trim())) {
@@ -171,6 +184,18 @@ export default function LoginPage() {
 
         {isRegister && (
           <>
+            <input
+              type="password"
+              name="confirmPassword"
+              placeholder="Confirm Password"
+              value={formData.confirmPassword}
+              onChange={handleChange}
+              className={inputStyle}
+              required
+            />
+            <div className="text-xs text-white/70 -mt-2">
+              Password must be at least 8 characters with one uppercase letter and one number
+            </div>
             <input
               type="text"
               name="address"

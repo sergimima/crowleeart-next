@@ -7,6 +7,8 @@ const nextConfig: NextConfig = {
   // Image optimization
   images: {
     remotePatterns: [],
+    unoptimized: false,
+    domains: ['crowleeart.com', 'crowleeart.co.uk'],
   },
 
   // Disable ESLint during production builds

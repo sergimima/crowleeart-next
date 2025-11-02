@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
-import { Image as ImageIcon, Plus, Trash2, Edit, Star } from 'lucide-react'
+import { Image as ImageIcon, Plus, Trash2, Edit, Star, Tag } from 'lucide-react'
 import Image from 'next/image'
 
 import { Button } from '@/components/ui/button'
@@ -26,11 +26,14 @@ interface GalleryItem {
 
 export default function AdminGallery() {
   const [galleryItems, setGalleryItems] = useState<GalleryItem[]>([])
+  const [categories, setCategories] = useState<string[]>([])
   const [loading, setLoading] = useState(true)
   const [showAddDialog, setShowAddDialog] = useState(false)
+  const [showCategoriesDialog, setShowCategoriesDialog] = useState(false)
   const [editingItem, setEditingItem] = useState<GalleryItem | null>(null)
   const [imageFile, setImageFile] = useState<File | null>(null)
   const [imagePreview, setImagePreview] = useState<string | null>(null)
+  const [newCategory, setNewCategory] = useState('')
 
   const [formData, setFormData] = useState({
     title: '',
@@ -41,7 +44,23 @@ export default function AdminGallery() {
 
   useEffect(() => {
     fetchGalleryItems()
+    fetchCategories()
   }, [])
+
+  const fetchCategories = async () => {
+    try {
+      const response = await fetch('/api/admin/gallery/categories', {
+        credentials: 'include'
+      })
+
+      if (response.ok) {
+        const data = await response.json()
+        setCategories(data)
+      }
+    } catch (err) {
+      console.error('Error fetching categories:', err)
+    }
+  }
 
   const fetchGalleryItems = async () => {
     try {
@@ -188,10 +207,16 @@ export default function AdminGallery() {
           <h2 className="text-2xl font-bold">Gallery Management</h2>
           <p className="text-muted-foreground">Manage portfolio images</p>
         </div>
-        <Button onClick={openAddDialog}>
-          <Plus className="mr-2 h-4 w-4" />
-          Add Image
-        </Button>
+        <div className="flex gap-2">
+          <Button variant="outline" onClick={() => setShowCategoriesDialog(true)}>
+            <Tag className="mr-2 h-4 w-4" />
+            Manage Categories
+          </Button>
+          <Button onClick={openAddDialog}>
+            <Plus className="mr-2 h-4 w-4" />
+            Add Image
+          </Button>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
@@ -310,11 +335,11 @@ export default function AdminGallery() {
                   <SelectValue placeholder="Select category" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="tattoo">Tattoo</SelectItem>
-                  <SelectItem value="piercing">Piercing</SelectItem>
-                  <SelectItem value="maintenance">Maintenance</SelectItem>
-                  <SelectItem value="renovation">Renovation</SelectItem>
-                  <SelectItem value="other">Other</SelectItem>
+                  {categories.map(cat => (
+                    <SelectItem key={cat} value={cat}>
+                      {cat}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>
@@ -339,6 +364,88 @@ export default function AdminGallery() {
               </Button>
             </DialogFooter>
           </form>
+        </DialogContent>
+      </Dialog>
+
+      {/* Manage Categories Dialog */}
+      <Dialog open={showCategoriesDialog} onOpenChange={setShowCategoriesDialog}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Manage Categories</DialogTitle>
+            <DialogDescription>
+              Add or remove gallery categories
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-4">
+            {/* Add Category */}
+            <div className="flex gap-2">
+              <Input
+                value={newCategory}
+                onChange={(e) => setNewCategory(e.target.value)}
+                placeholder="New category name"
+                onKeyPress={(e) => {
+                  if (e.key === 'Enter') {
+                    e.preventDefault()
+                    if (newCategory.trim() && !categories.includes(newCategory.trim())) {
+                      setCategories([...categories, newCategory.trim()])
+                      setNewCategory('')
+                      toast.success('Category added! Use it when creating gallery items.')
+                    }
+                  }
+                }}
+              />
+              <Button
+                type="button"
+                onClick={() => {
+                  if (newCategory.trim() && !categories.includes(newCategory.trim())) {
+                    setCategories([...categories, newCategory.trim()])
+                    setNewCategory('')
+                    toast.success('Category added! Use it when creating gallery items.')
+                  }
+                }}
+              >
+                <Plus className="h-4 w-4" />
+              </Button>
+            </div>
+
+            {/* Categories List */}
+            <div className="space-y-2 max-h-64 overflow-y-auto">
+              {categories.length === 0 ? (
+                <p className="text-sm text-muted-foreground text-center py-4">
+                  No categories yet. Categories are created automatically when you add gallery items.
+                </p>
+              ) : (
+                categories.map((cat) => (
+                  <div key={cat} className="flex items-center justify-between p-2 border rounded">
+                    <span className="font-medium">{cat}</span>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => {
+                        // Check if category is in use
+                        const inUse = galleryItems.some(item => item.category === cat)
+                        if (inUse) {
+                          toast.error('Cannot delete: Category is in use by gallery items')
+                        } else {
+                          setCategories(categories.filter(c => c !== cat))
+                          toast.success('Category removed')
+                        }
+                      }}
+                    >
+                      <Trash2 className="h-4 w-4 text-destructive" />
+                    </Button>
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+
+          <DialogFooter>
+            <Button onClick={() => setShowCategoriesDialog(false)}>
+              Done
+            </Button>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
     </div>

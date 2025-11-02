@@ -46,8 +46,8 @@ COPY --from=builder /app/prisma ./prisma
 COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
 
 # Crear directorios necesarios con permisos correctos
-RUN mkdir -p /app/public/uploads/bookings /app/.next/cache
-RUN chown -R nextjs:nodejs /app/public/uploads /app/.next/cache
+RUN mkdir -p /app/public/uploads/bookings /app/public/uploads/gallery /app/.next/cache
+RUN chown -R nextjs:nodejs /app/public /app/.next/cache
 
 USER nextjs
 

@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
-import { Eye, Trash2, Calendar as CalendarIcon, User, Mail, Phone, Clock, CheckCircle2, XCircle } from 'lucide-react'
+import { Eye, Trash2, Calendar as CalendarIcon, User, Mail, Phone, Clock, CheckCircle2, XCircle, Image as ImageIcon } from 'lucide-react'
+import Image from 'next/image'
 import { format } from 'date-fns'
 
 import { Button } from '@/components/ui/button'
@@ -26,6 +27,7 @@ interface Booking {
     email: string
   }
   status: 'pending' | 'confirmed' | 'completed' | 'cancelled'
+  imageUrl?: string
 }
 
 interface AdminBookingProps {
@@ -295,6 +297,33 @@ export default function AdminBooking({ bookings: initialBookings, onUpdate }: Ad
                   )}
                 </div>
               </div>
+
+              {/* Reference Image */}
+              {viewingBooking.imageUrl && (
+                <div className="space-y-3">
+                  <h4 className="font-semibold text-sm text-muted-foreground uppercase tracking-wide flex items-center gap-2">
+                    <ImageIcon className="h-4 w-4" />
+                    Reference Image
+                  </h4>
+                  <div className="relative w-full h-64 border rounded-lg overflow-hidden bg-muted">
+                    <Image
+                      src={viewingBooking.imageUrl}
+                      alt="Booking reference"
+                      fill
+                      className="object-contain"
+                    />
+                  </div>
+                  <a
+                    href={viewingBooking.imageUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-sm text-blue-500 hover:underline flex items-center gap-1"
+                  >
+                    <ImageIcon className="h-3 w-3" />
+                    View full size
+                  </a>
+                </div>
+              )}
             </div>
           )}
           <DialogFooter>

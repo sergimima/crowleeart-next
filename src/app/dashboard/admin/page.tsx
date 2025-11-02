@@ -49,6 +49,7 @@ type AdminData = {
   feedbacks: any[]
   surveys: any[]
   users: any[]
+  galleryItems: any[]
 }
 
 const COLORS = ['#8884d8', '#82ca9d', '#ffc658', '#ff8042', '#8dd1e1', '#a4de6c']
@@ -66,6 +67,7 @@ export default function AdminDashboard() {
     feedbacks: [],
     surveys: [],
     users: [],
+    galleryItems: [],
   })
   const [loading, setLoading] = useState(true)
 
@@ -86,6 +88,7 @@ export default function AdminDashboard() {
           feedbacks: data.feedbacks ?? [],
           surveys: data.surveys ?? [],
           users: data.users ?? [],
+          galleryItems: data.galleryItems ?? [],
         })
         toast.success('Dashboard data loaded successfully')
       } else if (response.status === 401 || response.status === 403) {

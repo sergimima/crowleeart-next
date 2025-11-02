@@ -67,7 +67,7 @@ export default function GalleryPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#0a0f1e] via-[#0f1729] to-[#1a1f3a]">
+    <div className="min-h-screen">
       {/* Header */}
       <div className="container mx-auto px-4 py-20">
         <motion.div

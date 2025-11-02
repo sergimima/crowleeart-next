@@ -86,14 +86,14 @@ export default function Navbar() {
 
   return (
     <nav className="fixed top-0 left-0 w-full bg-[#0f172a]/90 backdrop-blur-md border-b border-white/10 shadow z-50">
-      <div className="max-w-7xl mx-auto px-4 py-2 flex items-center justify-between">
-        <Link href="/" className="flex items-center space-x-3">
+      <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
+        <Link href="/" className="flex items-center">
           <Image
             src="/images/logos/logo-crowlee Background clear.png"
             alt="Crowlee Art Logo"
             width={240}
             height={80}
-            className="h-20 w-auto object-cover object-center scale-125"
+            className="h-20 w-auto object-contain hover:scale-105 transition-transform duration-300"
             priority
           />
         </Link>
