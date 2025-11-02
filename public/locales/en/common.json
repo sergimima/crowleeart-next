@@ -1,0 +1,128 @@
+{
+  "navbar": {
+    "home": "Home",
+    "gallery": "Gallery",
+    "services": "Services",
+    "booking": "Booking",
+    "contact": "Contact",
+    "admin": "Admin"
+  },
+  "gallery": {
+    "title": "Our Work Gallery",
+    "category": {
+      "all": "All",
+      "other": "Other"
+    },
+    "items": {
+      "1": { "title": "Door Install and Repair", "category": "Doors" },
+      "2": { "title": "Modern Flooring", "category": "Flooring" },
+      "3": { "title": "Decorating", "category": "Painting" },
+      "4": { "title": "Leak", "category": "Plumbing" },
+      "5": { "title": "Repair Drywall", "category": "Drywall" },
+      "6": { "title": "Damaged Cabinets", "category": "Furniture" }
+    },
+    "cta": {
+      "title": "✨ Impressed with our work?",
+      "description": "Let us bring this quality to your space. Book your service today or get in touch for a personalized quote.",
+      "button": "Book Now"
+    }
+  },
+  "services": {
+    "title": "Our Services",
+    "description": "At Crowlee Art, we believe that true craftsmanship begins with care and ends with excellence. Whether it's a minor repair or a major installation, we bring dedication, detail, and deep expertise to every job. Here's what we proudly offer:",
+    "doorTitle": "Door Installation",
+    "doorText": "Precise custom fitting, hinge cutting, lock fitting, and adjustments to match the unique structure of your home.",
+    "repairsTitle": "General Repairs",
+    "repairsText": "We repair handles, fixtures, locks, frames, and more—ensuring things work and look as they should.",
+    "emergencyTitle": "Emergency Services",
+    "emergencyText": "Fast response and priority attention for urgent problems across London, 7 days a week.",
+    "maintenanceTitle": "Property Maintenance",
+    "maintenanceText": "Reliable, recurring maintenance for homes and small businesses—because prevention is key.",
+    "drywallTitle": "Drywall & Painting",
+    "drywallText": "From minor drywall repairs to full painting and finishing—flawless results with clean execution.",
+    "leakTitle": "Leak Investigation",
+    "leakText": "Thorough diagnostic and moisture detection for leaks, saving you time and structural damage.",
+    "heaterTitle": "Electric Heater Installation",
+    "heaterText": "Safe, efficient setup of electric heating units, thermostats and wiring with certified care.",
+    "managementTitle": "Property Management Issues",
+    "managementText": "Support with reporting, resolution and minor works for landlords, tenants, and property owners.",
+    "consultTitle": "Consultations",
+    "consultText": "Need help planning or sourcing? We offer transparent advice and project vision for your unique needs.",
+    "finalTitle": "We're not just a service — we're a trusted partner for your home.",
+    "finalText": "Let us take care of the things that matter most. Reach out today and discover the peace of mind that comes with working with true professionals."
+  },
+  "home": {
+    "title": "Crowlee Art",
+    "description": "We provide expert home & small business maintenance, door repair and installation, flooring, painting, plumbing and much more. Crowlee Art services are across all London and Hertfordshire. Our team is dedicated to professionalism, reliability, and delivering the best quality results.",
+    "services": {
+      "1": {
+        "title": "🛠️ General Home Maintenance",
+        "text": "From fixing leaks, decorating, and repairing small home issues to full property checkups – we ensure your home runs smoothly."
+      },
+      "2": {
+        "title": "🚪 Custom Door Installations",
+        "text": "We repair, cut, trim, hang, and align doors perfectly. We also install locks, padlocks, digital and contactless access systems."
+      },
+      "3": {
+        "title": "🔧 Emergency Repairs",
+        "text": "Unexpected issues? We help manage the problem and make the area safe as quickly as possible – 24/7 support."
+      },
+      "4": {
+        "title": "📅 Easy Online Booking",
+        "text": "You can contact us or book your service instantly through our user-friendly system. (Feature under development)"
+      }
+    },
+    "cta": {
+      "title": "📸 Work Gallery and Testimonials",
+      "description": "Discover real projects and hear from happy clients who trust Crowlee Art.",
+      "button": "Explore Our Work"
+    },
+    "footer": "Start your journey with us today and experience hassle-free home improvement."
+  },
+  "contact": {
+    "title": "Contact Us",
+    "name": "Name",
+    "email": "Email",
+    "subject": "Subject",
+    "message": "Message",
+    "placeholder": "Write your message here...",
+    "submit": "Send Message",
+    "alertInvalidEmail": "Please enter a valid email.",
+    "alertSuccess": "Thank you for contacting us!"
+  },
+  "booking": {
+    "title": "Book a Service",
+    "name": "Name",
+    "email": "Email",
+    "phone": "Phone",
+    "service": "Service",
+    "selectService": "Select a Service",
+    "date": "Preferred Date",
+    "description": "Description",
+    "descriptionPlaceholder": "Describe your service needs...",
+    "submit": "Book Service",
+    "services": {
+      "general": "General Maintenance",
+      "plumbing": "Plumbing",
+      "painting": "Painting & Decoration",
+      "flooring": "Laminate Flooring",
+      "washing": "Pressure Washing"
+    }
+  },
+  "register": {
+    "title": "Register",
+    "name": "Name",
+    "address": "Address",
+    "phone": "Phone number",
+    "submit": "Register",
+    "haveAccount": "Already have an account?"
+  },
+  "login": {
+    "title": "Login",
+    "email": "Email",
+    "password": "Password",
+    "submit": "Login",
+    "noAccount": "Don't have an account?"
+  },
+  "loading": "Loading..."
+}

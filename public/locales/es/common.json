@@ -1,0 +1,120 @@
+{
+  "navbar": {
+    "home": "Inicio",
+    "gallery": "Galería",
+    "services": "Servicios",
+    "booking": "Reserva",
+    "contact": "Contacto",
+    "admin": "Administrador"
+  },
+  "gallery": {
+    "title": "Galería de nuestros trabajos",
+    "category": {
+      "all": "Todos",
+      "other": "Otros"
+    },
+    "items": {
+      "1": { "title": "Instalación y reparación de puertas", "category": "Puertas" },
+      "2": { "title": "Suelo moderno", "category": "Suelos" },
+      "3": { "title": "Decoración", "category": "Pintura" },
+      "4": { "title": "Fugas", "category": "Fontanería" },
+      "5": { "title": "Reparación de pladur", "category": "Pladur" },
+      "6": { "title": "Armarios dañados", "category": "Muebles" }
+    },
+    "cta": {
+      "title": "✨ ¿Impresionado con nuestro trabajo?",
+      "description": "Llevamos esta calidad a tu hogar. Reserva tu servicio hoy o contáctanos para una cotización personalizada.",
+      "button": "Reservar ahora"
+    }
+  },
+  "services": {
+    "title": "Nuestros Servicios",
+    "description": "En Crowlee Art, creemos que la verdadera artesanía comienza con el cuidado y termina con la excelencia. Ya sea una reparación menor o una instalación mayor, aportamos dedicación, detalle y experiencia en cada trabajo. Esto es lo que ofrecemos con orgullo:",
+    "doorTitle": "Instalación de puertas",
+    "doorText": "Ajustes a medida, corte de bisagras, instalación de cerraduras y adaptación a la estructura de tu hogar.",
+    "repairsTitle": "Reparaciones generales",
+    "repairsText": "Reparamos manillas, cerraduras, marcos y más, asegurando que todo funcione y se vea como debe.",
+    "emergencyTitle": "Servicios de emergencia",
+    "emergencyText": "Respuesta rápida y atención prioritaria para problemas urgentes en Londres, los 7 días de la semana.",
+    "maintenanceTitle": "Mantenimiento de propiedades",
+    "maintenanceText": "Mantenimiento recurrente y fiable para hogares y pequeños negocios, porque prevenir es clave.",
+    "drywallTitle": "Pladur y pintura",
+    "drywallText": "Desde reparaciones menores hasta pintura completa, resultados impecables con ejecución limpia.",
+    "leakTitle": "Investigación de fugas",
+    "leakText": "Detección de humedad y diagnóstico completo para evitar daños estructurales.",
+    "heaterTitle": "Instalación de calefactores eléctricos",
+    "heaterText": "Instalación segura y eficiente de sistemas eléctricos con termostatos y cableado certificado.",
+    "managementTitle": "Gestión de propiedades",
+    "managementText": "Apoyo para reportes, reparaciones menores y soluciones para propietarios, inquilinos y administradores.",
+    "consultTitle": "Consultorías",
+    "consultText": "¿Necesitas ayuda para planificar o buscar materiales? Ofrecemos asesoramiento transparente y visión de proyecto.",
+    "finalTitle": "No somos solo un servicio, somos tu aliado de confianza.",
+    "finalText": "Déjanos encargarnos de lo que más importa. Contáctanos hoy y disfruta de la tranquilidad de trabajar con verdaderos profesionales."
+  },
+  "home": {
+    "title": "Crowlee Art",
+    "description": "Ofrecemos mantenimiento experto para hogares y pequeños negocios: reparación e instalación de puertas, suelos, pintura, fontanería y mucho más. Crowlee Art opera en todo Londres y Hertfordshire. Nuestro equipo está comprometido con la profesionalidad, fiabilidad y calidad.",
+    "services": {
+      "1": {
+        "title": "🛠️ Mantenimiento general del hogar",
+        "text": "Desde arreglos menores, decoración y revisión de instalaciones, nos aseguramos de que todo funcione sin problemas."
+      },
+      "2": {
+        "title": "🚪 Instalación de puertas a medida",
+        "text": "Reparamos, cortamos, colgamos e instalamos cerraduras convencionales o digitales con precisión y seguridad."
+      },
+      "3": {
+        "title": "🔧 Reparaciones de emergencia",
+        "text": "¿Problemas inesperados? Te ayudamos a gestionar y solucionar rápidamente la situación. Asistencia 24/7."
+      },
+      "4": {
+        "title": "📅 Reserva online sencilla",
+        "text": "Contáctanos o reserva tu servicio fácilmente desde nuestro sistema. (Función en desarrollo)"
+      }
+    },
+    "cta": {
+      "title": "📸 Galería de trabajos y testimonios",
+      "description": "Conoce proyectos reales y testimonios de clientes satisfechos que confían en Crowlee Art.",
+      "button": "Ver nuestros trabajos"
+    },
+    "footer": "Empieza tu proyecto con nosotros y disfruta de una mejora del hogar sin complicaciones."
+  },
+  "contact": {
+    "title": "Contáctanos",
+    "name": "Nombre",
+    "email": "Correo electrónico",
+    "subject": "Asunto",
+    "message": "Mensaje",
+    "placeholder": "Escribe tu mensaje aquí...",
+    "submit": "Enviar mensaje",
+    "alertInvalidEmail": "Por favor, introduce un correo válido.",
+    "alertSuccess": "¡Gracias por contactarnos!"
+  },
+  "booking": {
+    "title": "Reservar un servicio",
+    "name": "Nombre",
+    "email": "Correo electrónico",
+    "phone": "Teléfono",
+    "service": "Servicio",
+    "selectService": "Selecciona un servicio",
+    "date": "Fecha preferida",
+    "description": "Descripción",
+    "descriptionPlaceholder": "Describe tus necesidades...",
+    "submit": "Reservar",
+    "services": {
+      "general": "Mantenimiento general",
+      "plumbing": "Fontanería",
+      "painting": "Pintura y decoración",
+      "flooring": "Suelos laminados",
+      "washing": "Limpieza a presión"
+    }
+  },
+  "clientDashboard": {
+    "title": "Panel de Cliente",
+    "myBookings": "Mis Reservas",
+    "loading": "Cargando tus reservas...",
+    "noBookings": "Aún no tienes reservas.",
+    "myFeedback": "Mis Comentarios",
+    "noFeedback": "Aún no has proporcionado comentarios."
+  }
+}

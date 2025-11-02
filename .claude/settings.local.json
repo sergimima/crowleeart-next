@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx shadcn@latest init -y)",
+      "Bash(npm install @tanstack/react-table @tanstack/react-query lucide-react clsx tailwind-merge date-fns sonner jspdf jspdf-autotable zustand @tremor/react)",
+      "Bash(npm install @tanstack/react-table @tanstack/react-query lucide-react clsx tailwind-merge date-fns sonner jspdf jspdf-autotable zustand)",
+      "Bash(npx prisma db push)",
+      "Bash(curl:*)",
+      "Bash(.)",
+      "Bash(npm install:*)",
+      "Bash(npx shadcn@latest add alert-dialog)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

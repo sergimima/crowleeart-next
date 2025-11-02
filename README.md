@@ -1,36 +1,136 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# CrowleeART - Next.js 15.5
 
-## Getting Started
+Plataforma de servicios profesionales migrada a Next.js 15.5
 
-First, run the development server:
+## Estado de Migración
+
+✅ **Fase 0**: Preparación (COMPLETADA)
+✅ **Fase 1**: Setup Next.js (COMPLETADA)
+⬜ **Fase 2**: Autenticación NextAuth v5
+⬜ **Fase 3**: Landing Pages
+⬜ **Fase 4**: Dashboard Admin
+⬜ **Fase 5**: Sistema de Booking
+
+Ver [MIGRATION_STATUS.md](../CrowleeART/MIGRATION_STATUS.md) para más detalles.
+
+## Stack Tecnológico
+
+- **Next.js 15.5** - Con Turbopack y React 19
+- **TypeScript** - Type-safety completo
+- **Prisma** - ORM para PostgreSQL
+- **NextAuth v5** - Autenticación (por implementar)
+- **TailwindCSS 4.0** - Estilos
+- **Zod** - Validaciones
+- **React Hook Form** - Formularios
+
+## Desarrollo
+
+### Instalar dependencias
+```bash
+npm install
+```
+
+### Configurar base de datos
+
+1. Copia `.env.local.example` a `.env.local` (ya existe)
+2. Configura tu `DATABASE_URL` en `.env.local`
+3. Ejecuta las migraciones:
+
+```bash
+npx prisma migrate dev --name init
+npx prisma generate
+```
+
+### Ejecutar en desarrollo
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Abre [http://localhost:3000](http://localhost:3000)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Otros comandos
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+# Build para producción
+npm run build
 
-## Learn More
+# Ejecutar producción
+npm start
 
-To learn more about Next.js, take a look at the following resources:
+# Lint
+npm run lint
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+# Abrir Prisma Studio
+npx prisma studio
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Estructura del Proyecto
 
-## Deploy on Vercel
+```
+crowleeart-next/
+├── src/
+│   ├── app/                    # App Router (Next.js)
+│   │   ├── page.tsx           # Homepage
+│   │   └── api/               # API Routes
+│   │       └── health/        # Health check
+│   ├── lib/                   # Librerías y utils
+│   │   └── db.ts             # Prisma client
+│   └── components/            # Componentes React (por crear)
+├── prisma/
+│   └── schema.prisma         # Database schema (8 modelos)
+├── public/                   # Assets estáticos
+└── .env.local               # Variables de entorno
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Modelos de Base de Datos
+
+El schema incluye 8 modelos:
+
+1. **User** - Usuarios (client, admin, professional)
+2. **Service** - Servicios ofrecidos
+3. **Booking** - Reservas de servicios
+4. **Review** - Reseñas de usuarios
+5. **Message** - Mensajes del sistema
+6. **Feedback** - Feedback general
+7. **Survey** - Encuestas
+8. **SurveyResponse** - Respuestas a encuestas
+
+Ver `prisma/schema.prisma` para detalles completos.
+
+## API Routes
+
+### Health Check
+`GET /api/health` - Verifica que la API y la base de datos estén funcionando
+
+```bash
+curl http://localhost:3000/api/health
+```
+
+## Próximos Pasos
+
+1. **Implementar NextAuth v5** - Sistema de autenticación
+2. **Crear páginas de auth** - Login, Register, Logout
+3. **Landing pages públicas** - Homepage, Servicios
+4. **Dashboard admin** - Panel de administración
+5. **Sistema de booking** - Reservas online
+
+## Documentación
+
+- [Plan de Migración Completo](../CrowleeART/MIGRATION_PLAN.md)
+- [Estado de Migración](../CrowleeART/MIGRATION_STATUS.md)
+- [Review del Proyecto Original](../CrowleeART/review.md)
+
+## Notas
+
+- Turbopack está activado por defecto (ready en ~1.3s)
+- Next.js 15.5 usa React 19 con Server Components
+- TypeScript estricto habilitado
+- ESLint configurado
+
+---
+
+**Fecha de creación:** 18 de Octubre de 2025
+**Versión de Next.js:** 15.5.6
+**Progreso:** 18% (Fase 0 y 1 completadas)

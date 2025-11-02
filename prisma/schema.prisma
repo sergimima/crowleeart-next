@@ -1,0 +1,152 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ========================================
+// MODELS - CrowleeART Platform
+// ========================================
+
+model User {
+  id        Int       @id @default(autoincrement())
+  name      String
+  email     String    @unique
+  password  String
+  role      String    @default("client") // "client", "admin", "professional"
+  address   String?
+  phone     String?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  // Relations
+  bookings  Booking[]
+  reviews   Review[]
+  messages  Message[]
+  feedbacks Feedback[]
+  surveyResponses SurveyResponse[]
+
+  @@index([email])
+  @@index([role])
+}
+
+model Service {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String   @db.Text
+  price       Float
+  marketPrice Float    @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  bookings Booking[]
+
+  @@index([title])
+}
+
+model Booking {
+  id          Int      @id @default(autoincrement())
+  userId      Int
+  serviceId   Int
+  date        DateTime
+  description String   @db.Text
+  phone       String
+  imageUrl    String?  // Optional image URL for reference photos
+  status      String   @default("pending") // "pending", "confirmed", "in_progress", "completed", "cancelled"
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  service Service @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([serviceId])
+  @@index([status])
+  @@index([date])
+}
+
+model Review {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  rating    Int      // 1-5 stars
+  comment   String   @db.Text
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([rating])
+}
+
+model Message {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  subject   String
+  content   String   @db.Text
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([read])
+}
+
+model Feedback {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  rating    Int      // 1-5 stars
+  comment   String   @db.Text
+  category  String?  // Optional: type of feedback (service, website, support, etc.)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([category])
+}
+
+model Survey {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String?  @db.Text
+  questions   Json     // Array of questions with options
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  responses SurveyResponse[]
+
+  @@index([active])
+}
+
+model SurveyResponse {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  surveyId  Int
+  answers   Json     // User's answers to survey questions
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  survey Survey @relation(fields: [surveyId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, surveyId]) // One response per user per survey
+  @@index([surveyId])
+}
