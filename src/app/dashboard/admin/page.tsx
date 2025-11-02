@@ -20,7 +20,8 @@ import {
   LayoutDashboard,
   Settings,
   TrendingUp,
-  FileText
+  FileText,
+  Image as ImageIcon
 } from 'lucide-react'
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -38,6 +39,7 @@ import AdminMessages from '@/components/admin/AdminMessages'
 import AdminReviews from '@/components/admin/AdminReviews'
 import AdminFeedback from '@/components/admin/AdminFeedback'
 import AdminSurveys from '@/components/admin/AdminSurveys'
+import AdminGallery from '@/components/admin/AdminGallery'
 
 type AdminData = {
   services: any[]
@@ -193,6 +195,7 @@ export default function AdminDashboard() {
     { key: 'reviews', label: 'Reviews', count: adminData.reviews.length, icon: Star },
     { key: 'feedback', label: 'Feedback', count: adminData.feedbacks.length, icon: MessageCircle },
     { key: 'surveys', label: 'Surveys', count: adminData.surveys.length, icon: ClipboardList },
+    { key: 'gallery', label: 'Gallery', count: 0, icon: ImageIcon },
   ]
 
   const StatCard = ({ title, value, icon: Icon, trend }: any) => (
@@ -235,6 +238,8 @@ export default function AdminDashboard() {
         return <AdminFeedback feedbacks={adminData.feedbacks} onUpdate={fetchAdminData} />
       case 'surveys':
         return <AdminSurveys surveys={adminData.surveys} onUpdate={fetchAdminData} />
+      case 'gallery':
+        return <AdminGallery />
       default:
         return <p className="text-muted-foreground">Select a section from the menu.</p>
     }

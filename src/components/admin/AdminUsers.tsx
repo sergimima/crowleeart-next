@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
-import { UserPlus, Edit, Trash2, Key, User as UserIcon, Mail, Shield, Search } from 'lucide-react'
+import { Edit, Trash2, Key, User as UserIcon, Shield, Search } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
@@ -66,9 +66,9 @@ export default function AdminUsers({ users: initialUsers, onUpdate }: AdminUsers
       setIsEditOpen(false)
       setEditingUser(null)
       onUpdate()
-    } catch (err: any) {
+    } catch (err) {
       console.error('Error updating user:', err)
-      toast.error(err.message || 'Failed to update user')
+      toast.error(err instanceof Error ? err.message : 'Failed to update user')
     } finally {
       setActionLoading(null)
     }
@@ -99,9 +99,9 @@ export default function AdminUsers({ users: initialUsers, onUpdate }: AdminUsers
       setIsPasswordOpen(false)
       setPasswordUserId(null)
       setNewPassword('')
-    } catch (err: any) {
+    } catch (err) {
       console.error('Error resetting password:', err)
-      toast.error(err.message || 'Failed to reset password')
+      toast.error(err instanceof Error ? err.message : 'Failed to reset password')
     } finally {
       setActionLoading(null)
     }
@@ -122,9 +122,9 @@ export default function AdminUsers({ users: initialUsers, onUpdate }: AdminUsers
       setUsers(prev => prev.filter(user => user.id !== id))
       toast.success('User deleted successfully!')
       onUpdate()
-    } catch (err: any) {
+    } catch (err) {
       console.error('Error deleting user:', err)
-      toast.error(err.message || 'Failed to delete user')
+      toast.error(err instanceof Error ? err.message : 'Failed to delete user')
     } finally {
       setActionLoading(null)
     }

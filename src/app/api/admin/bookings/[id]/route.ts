@@ -7,7 +7,7 @@ const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-producti
 // Update booking status (admin only)
 export async function PUT(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const token = req.cookies.get('token')?.value
@@ -41,7 +41,8 @@ export async function PUT(
       )
     }
 
-    const bookingId = parseInt(params.id)
+    const { id } = await params
+    const bookingId = parseInt(id)
     const { status } = await req.json()
 
     // Validate status
@@ -91,7 +92,7 @@ export async function PUT(
 // Delete booking (admin only)
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const token = req.cookies.get('token')?.value
@@ -125,7 +126,8 @@ export async function DELETE(
       )
     }
 
-    const bookingId = parseInt(params.id)
+    const { id } = await params
+    const bookingId = parseInt(id)
 
     // Verify booking exists
     const existingBooking = await prisma.booking.findUnique({

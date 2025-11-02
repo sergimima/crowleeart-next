@@ -150,3 +150,17 @@ model SurveyResponse {
   @@unique([userId, surveyId]) // One response per user per survey
   @@index([surveyId])
 }
+
+model GalleryItem {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String?  @db.Text
+  imageUrl    String
+  category    String?  // "tattoo", "piercing", "maintenance", etc.
+  featured    Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([category])
+  @@index([featured])
+}

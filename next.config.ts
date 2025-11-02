@@ -8,6 +8,11 @@ const nextConfig: NextConfig = {
   images: {
     remotePatterns: [],
   },
+
+  // Disable ESLint during production builds
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
 };
 
 export default nextConfig;

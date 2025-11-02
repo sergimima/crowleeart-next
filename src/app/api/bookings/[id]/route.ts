@@ -7,7 +7,7 @@ const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-producti
 // Update booking (cancel, reschedule, etc.)
 export async function PATCH(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const token = req.cookies.get('token')?.value
@@ -29,7 +29,8 @@ export async function PATCH(
       )
     }
 
-    const bookingId = parseInt(params.id)
+    const { id } = await params
+    const bookingId = parseInt(id)
     const { status, date } = await req.json()
 
     // Verify booking exists and belongs to user
@@ -113,7 +114,7 @@ export async function PATCH(
 // Delete booking (hard delete - use with caution)
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const token = req.cookies.get('token')?.value
@@ -135,7 +136,8 @@ export async function DELETE(
       )
     }
 
-    const bookingId = parseInt(params.id)
+    const { id } = await params
+    const bookingId = parseInt(id)
 
     // Verify booking exists and belongs to user
     const existingBooking = await prisma.booking.findUnique({
