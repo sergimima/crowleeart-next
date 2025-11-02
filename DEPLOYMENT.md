@@ -32,7 +32,7 @@ exit
 
 ### 1. Clonar el proyecto en el servidor
 ```bash
-git clone https://github.com/tu-usuario/crowleeart-next.git
+git https://github.com/sergimima/crowleeart-next.git
 cd crowleeart-next
 ```
 

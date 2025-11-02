@@ -90,7 +90,7 @@ export default function AdminDashboard() {
         toast.error('Unauthorized access')
         router.push('/login')
       }
-    } catch (error: any) {
+    } catch (error) {
       console.error('Error fetching admin data:', error)
       toast.error('Failed to load dashboard data')
     } finally {
@@ -102,7 +102,7 @@ export default function AdminDashboard() {
     fetchAdminData()
   }, [])
 
-  const exportToExcel = (data: any[], filename: string) => {
+  const exportToExcel = (data: Record<string, unknown>[], filename: string) => {
     const worksheet = XLSX.utils.json_to_sheet(data)
     const workbook = XLSX.utils.book_new()
     XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1')
@@ -133,7 +133,8 @@ export default function AdminDashboard() {
       ['Total Surveys', adminData.surveys.length.toString()],
     ]
 
-    ;(doc as any).autoTable({
+    // @ts-expect-error - jsPDF autoTable plugin types
+    doc.autoTable({
       head: [stats[0]],
       body: stats.slice(1),
       startY: 40,
