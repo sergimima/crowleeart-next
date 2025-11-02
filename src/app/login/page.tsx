@@ -206,12 +206,6 @@ export default function LoginPage() {
         >
           {isRegister ? 'Already have an account? Login' : 'Don\'t have an account? Register'}
         </button>
-
-        <div className="text-center text-sm text-white/60 mt-4">
-          <p>Test credentials:</p>
-          <p>Admin: admin@crowleeart.com / 123456</p>
-          <p>Client: juan@email.com / 123456</p>
-        </div>
       </motion.form>
     </motion.div>
   )
