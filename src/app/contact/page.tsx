@@ -1,7 +1,8 @@
 'use client'
 
-import { useState, FormEvent } from 'react'
+import { useState, useEffect, FormEvent } from 'react'
 import { motion } from 'framer-motion'
+import { usePathname } from 'next/navigation'
 import { toast } from 'react-toastify'
 
 interface ContactForm {
@@ -19,6 +20,15 @@ export default function ContactPage() {
     message: ''
   })
   const [loading, setLoading] = useState(false)
+  const pathname = usePathname()
+
+  useEffect(() => {
+    // Scroll to top when pathname changes
+    const mainElement = document.querySelector('main')
+    if (mainElement) {
+      mainElement.scrollTop = 0
+    }
+  }, [pathname])
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
@@ -69,7 +79,7 @@ export default function ContactPage() {
 
   return (
     <motion.section
-      className="w-full max-w-3xl mx-auto px-4 py-16 text-white"
+      className="w-full max-w-3xl mx-auto px-4 py-8 md:py-16 text-white min-h-[calc(100vh-4rem)]"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
     >

@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import Image from 'next/image'
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import { X, Star, Filter } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -25,10 +26,19 @@ export default function GalleryPage() {
   const [loading, setLoading] = useState(true)
   const [selectedImage, setSelectedImage] = useState<GalleryItem | null>(null)
   const [categoryFilter, setCategoryFilter] = useState<string>('all')
+  const pathname = usePathname()
 
   useEffect(() => {
     fetchGallery()
   }, [])
+
+  useEffect(() => {
+    // Scroll to top when pathname changes
+    const mainElement = document.querySelector('main')
+    if (mainElement) {
+      mainElement.scrollTop = 0
+    }
+  }, [pathname])
 
   useEffect(() => {
     if (categoryFilter === 'all') {
@@ -57,7 +67,7 @@ export default function GalleryPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin h-12 w-12 border-4 border-primary border-t-transparent rounded-full mx-auto mb-4"></div>
           <p className="text-muted-foreground">Loading gallery...</p>
@@ -67,9 +77,9 @@ export default function GalleryPage() {
   }
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-[calc(100vh-4rem)] flex flex-col">
       {/* Header */}
-      <div className="container mx-auto px-4 py-20">
+      <div className="container mx-auto px-4 py-12 md:py-20 flex-1">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}

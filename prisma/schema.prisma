@@ -164,3 +164,17 @@ model GalleryItem {
   @@index([category])
   @@index([featured])
 }
+
+model QRCode {
+  id          Int      @id @default(autoincrement())
+  title       String   // "Business Card", "Van Door", "Poster", etc.
+  description String?  @db.Text
+  url         String   // Full URL with tracking parameter
+  refCode     String   @unique // The ref parameter value (e.g., "business-card")
+  qrImageData String   @db.Text // Base64 encoded QR code image
+  scanCount   Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([refCode])
+}

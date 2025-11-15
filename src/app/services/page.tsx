@@ -2,30 +2,41 @@
 
 import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
+import { usePathname } from 'next/navigation'
 
 interface Service {
   id: number
   title: string
   description: string
   price: number
+  marketPrice: number
 }
 
 export default function ServicesPage() {
   const [services, setServices] = useState<Service[]>([])
   const [loading, setLoading] = useState(true)
+  const pathname = usePathname()
 
   useEffect(() => {
     fetch('/api/services')
-      .then(res => res.json())
-      .then(data => {
-        setServices(data.services || [])
-        setLoading(false)
-      })
-      .catch(err => {
-        console.error(err)
-        setLoading(false)
-      })
+    .then(res => res.json())
+    .then(data => {
+      setServices(data.services || [])
+      setLoading(false)
+    })
+    .catch(err => {
+      console.error(err)
+      setLoading(false)
+    })
   }, [])
+
+  useEffect(() => {
+    // Scroll to top when pathname changes
+    const mainElement = document.querySelector('main')
+    if (mainElement) {
+      mainElement.scrollTop = 0
+    }
+  }, [pathname])
 
   const fadeIn = {
     hidden: { opacity: 0, y: 20 },
@@ -38,7 +49,7 @@ export default function ServicesPage() {
 
   return (
     <motion.section
-      className="w-full max-w-7xl mx-auto px-4 py-16 text-white"
+      className="w-full max-w-7xl mx-auto px-4 py-8 md:py-16 text-white min-h-[calc(100vh-4rem)]"
       initial="hidden"
       animate="visible"
       variants={fadeIn}
@@ -76,7 +87,21 @@ export default function ServicesPage() {
               </h2>
               <p className="text-white/80 mb-4">{service.description}</p>
               <div className="text-white/60 space-y-1 mb-4">
-                <p className="text-2xl font-bold text-white">£{service.price.toFixed(2)}</p>
+                {service.marketPrice > 0 && service.marketPrice > service.price ? (
+                  <div className="space-y-1">
+                    <p className="text-sm text-white/50 line-through">
+                      Was £{service.marketPrice.toFixed(2)}
+                    </p>
+                    <p className="text-2xl font-bold text-green-400">
+                      Now from £{service.price.toFixed(2)}
+                    </p>
+                    <p className="text-sm text-green-400 font-semibold">
+                      Save £{(service.marketPrice - service.price).toFixed(2)}!
+                    </p>
+                  </div>
+                ) : (
+                  <p className="text-2xl font-bold text-white">From £{service.price.toFixed(2)}</p>
+                )}
               </div>
             </motion.div>
           ))

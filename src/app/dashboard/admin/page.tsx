@@ -21,7 +21,8 @@ import {
   Settings,
   TrendingUp,
   FileText,
-  Image as ImageIcon
+  Image as ImageIcon,
+  QrCode
 } from 'lucide-react'
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -40,6 +41,7 @@ import AdminReviews from '@/components/admin/AdminReviews'
 import AdminFeedback from '@/components/admin/AdminFeedback'
 import AdminSurveys from '@/components/admin/AdminSurveys'
 import AdminGallery from '@/components/admin/AdminGallery'
+import AdminQRCodes from '@/components/admin/AdminQRCodes'
 
 type AdminData = {
   services: any[]
@@ -50,6 +52,7 @@ type AdminData = {
   surveys: any[]
   users: any[]
   galleryItems: any[]
+  qrCodes: any[]
 }
 
 const COLORS = ['#8884d8', '#82ca9d', '#ffc658', '#ff8042', '#8dd1e1', '#a4de6c']
@@ -68,6 +71,7 @@ export default function AdminDashboard() {
     surveys: [],
     users: [],
     galleryItems: [],
+    qrCodes: [],
   })
   const [loading, setLoading] = useState(true)
 
@@ -89,6 +93,7 @@ export default function AdminDashboard() {
           surveys: data.surveys ?? [],
           users: data.users ?? [],
           galleryItems: data.galleryItems ?? [],
+          qrCodes: data.qrCodes ?? [],
         })
         toast.success('Dashboard data loaded successfully')
       } else if (response.status === 401 || response.status === 403) {
@@ -198,7 +203,8 @@ export default function AdminDashboard() {
     { key: 'reviews', label: 'Reviews', count: adminData.reviews.length, icon: Star },
     { key: 'feedback', label: 'Feedback', count: adminData.feedbacks.length, icon: MessageCircle },
     { key: 'surveys', label: 'Surveys', count: adminData.surveys.length, icon: ClipboardList },
-    { key: 'gallery', label: 'Gallery', count: 0, icon: ImageIcon },
+    { key: 'gallery', label: 'Gallery', count: adminData.galleryItems.length, icon: ImageIcon },
+    { key: 'qrcodes', label: 'QR Codes', count: adminData.qrCodes.length, icon: QrCode },
   ]
 
   const StatCard = ({ title, value, icon: Icon, trend }: any) => (
@@ -243,6 +249,8 @@ export default function AdminDashboard() {
         return <AdminSurveys surveys={adminData.surveys} onUpdate={fetchAdminData} />
       case 'gallery':
         return <AdminGallery />
+      case 'qrcodes':
+        return <AdminQRCodes onUpdate={fetchAdminData} />
       default:
         return <p className="text-muted-foreground">Select a section from the menu.</p>
     }

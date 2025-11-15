@@ -33,7 +33,7 @@ export async function GET(req: NextRequest) {
       )
     }
 
-    const [services, bookings, messages, reviews, feedbacks, surveys, users] = await Promise.all([
+    const [services, bookings, messages, reviews, feedbacks, surveys, users, galleryItems, qrCodes] = await Promise.all([
       prisma.service.findMany(),
       prisma.booking.findMany({
         include: {
@@ -69,7 +69,9 @@ export async function GET(req: NextRequest) {
           role: true,
           createdAt: true
         }
-      })
+      }),
+      prisma.galleryItem.findMany(),
+      prisma.qRCode.findMany()
     ])
 
     return NextResponse.json({
@@ -79,7 +81,9 @@ export async function GET(req: NextRequest) {
       reviews,
       feedbacks,
       surveys,
-      users
+      users,
+      galleryItems,
+      qrCodes
     })
   } catch (error) {
     console.error('Admin data fetch error:', error)

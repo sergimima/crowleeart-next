@@ -9,6 +9,7 @@ export async function GET() {
         title: true,
         description: true,
         price: true,
+        marketPrice: true,
       },
       orderBy: { id: 'asc' },
     })
