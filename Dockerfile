@@ -44,10 +44,16 @@ COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
 COPY --from=builder /app/prisma ./prisma
 COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
+COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
+COPY --from=builder /app/node_modules/prisma ./node_modules/prisma
+
+# Copiar entrypoint script y dar permisos
+COPY scripts/entrypoint.sh ./entrypoint.sh
+RUN chmod +x ./entrypoint.sh
 
 # Crear directorios necesarios con permisos correctos
 RUN mkdir -p /app/public/uploads/bookings /app/public/uploads/gallery /app/.next/cache
-RUN chown -R nextjs:nodejs /app/public /app/.next/cache
+RUN chown -R nextjs:nodejs /app/public /app/.next/cache /app/entrypoint.sh
 
 USER nextjs
 
@@ -56,4 +62,4 @@ EXPOSE 3000
 ENV PORT 3000
 ENV HOSTNAME "0.0.0.0"
 
-CMD ["node", "server.js"]
+ENTRYPOINT ["./entrypoint.sh"]

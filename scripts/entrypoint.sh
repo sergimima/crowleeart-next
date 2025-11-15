@@ -12,13 +12,13 @@ done
 
 echo "✅ Database is ready!"
 
-# Run migrations in production (use migrate deploy)
-echo "📦 Running database migrations..."
-npx prisma migrate deploy
+# Push database schema (db push)
+echo "📦 Pushing database schema..."
+npx prisma db push
 
-# Or if you prefer db push (not recommended for production):
-# echo "📦 Pushing database schema..."
-# npx prisma db push --accept-data-loss
+# Generate Prisma Client (just in case)
+echo "🔧 Generating Prisma Client..."
+npx prisma generate
 
 # Start the application
 echo "🎉 Starting Next.js application..."
