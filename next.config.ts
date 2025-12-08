@@ -6,9 +6,17 @@ const nextConfig: NextConfig = {
 
   // Image optimization
   images: {
-    remotePatterns: [],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'crowleeart.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'crowleeart.co.uk',
+      },
+    ],
     unoptimized: false,
-    domains: ['crowleeart.com', 'crowleeart.co.uk'],
   },
 
   // Disable ESLint during production builds
