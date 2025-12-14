@@ -3,6 +3,7 @@ import { prisma } from '@/lib/db'
 import jwt from 'jsonwebtoken'
 import { writeFile, mkdir } from 'fs/promises'
 import path from 'path'
+import { validateImageFile, generateSafeFilename } from '@/lib/security'
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-production'
 
@@ -60,14 +61,23 @@ export async function POST(req: NextRequest) {
       )
     }
 
-    // Save image
+    // Validate file magic numbers
     const bytes = await imageFile.arrayBuffer()
     const buffer = Buffer.from(bytes)
+
+    const isValidImage = await validateImageFile(buffer)
+    if (!isValidImage) {
+      return NextResponse.json(
+        { error: 'Invalid file content. Only real images are allowed.' },
+        { status: 400 }
+      )
+    }
 
     const uploadsDir = path.join(process.cwd(), 'public', 'uploads', 'gallery')
     await mkdir(uploadsDir, { recursive: true })
 
-    const filename = `${Date.now()}-${imageFile.name}`
+    // Generate SAFE filename using UUID
+    const filename = generateSafeFilename(imageFile.name)
     const filepath = path.join(uploadsDir, filename)
     await writeFile(filepath, buffer)
 

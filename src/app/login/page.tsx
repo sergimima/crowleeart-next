@@ -2,7 +2,7 @@
 
 import { useState, FormEvent } from 'react'
 import { motion } from 'framer-motion'
-import { toast } from 'react-toastify'
+import { toast } from 'sonner'
 import { useRouter } from 'next/navigation'
 
 export default function LoginPage() {

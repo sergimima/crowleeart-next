@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
-import { Image as ImageIcon, Plus, Trash2, Edit, Star, Tag } from 'lucide-react'
+import { Image as ImageIcon, Plus, Trash2, Edit, Star, Tag, Upload, Grid, List } from 'lucide-react'
 import Image from 'next/image'
 
 import { Button } from '@/components/ui/button'
@@ -34,6 +34,7 @@ export default function AdminGallery() {
   const [imageFile, setImageFile] = useState<File | null>(null)
   const [imagePreview, setImagePreview] = useState<string | null>(null)
   const [newCategory, setNewCategory] = useState('')
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
 
   const [formData, setFormData] = useState({
     title: '',
@@ -169,6 +170,57 @@ export default function AdminGallery() {
     }
   }
 
+  const handleBulkUpload = async (files: FileList) => {
+    const total = files.length
+    let loaded = 0
+    let failed = 0
+
+    // We'll upload sequentially to avoid overwhelming the server
+    // and to make progress tracking easier
+
+    const toastId = toast.loading(`Uploading 1/${total} images...`)
+
+    for (let i = 0; i < total; i++) {
+      const file = files[i]
+
+      const formData = new FormData()
+      formData.append('title', file.name.split('.')[0]) // Use filename without ext as title
+      formData.append('description', '')
+      formData.append('category', 'Uncategorized')
+      formData.append('featured', 'false')
+      formData.append('image', file)
+
+      try {
+        const response = await fetch('/api/admin/gallery', {
+          method: 'POST',
+          credentials: 'include',
+          body: formData
+        })
+
+        if (response.ok) {
+          loaded++
+        } else {
+          failed++
+        }
+      } catch (err) {
+        console.error(`Failed to upload ${file.name}:`, err)
+        failed++
+      }
+
+      // Update progress
+      toast.loading(`Uploading ${i + 1}/${total} images...`, { id: toastId })
+    }
+
+    // Final report
+    if (failed > 0) {
+      toast.error(`Finished: ${loaded} uploaded, ${failed} failed`, { id: toastId })
+    } else {
+      toast.success(`Successfully uploaded ${loaded} images!`, { id: toastId })
+    }
+
+    fetchGalleryItems()
+  }
+
   const openAddDialog = () => {
     setFormData({ title: '', description: '', category: '', featured: false })
     setEditingItem(null)
@@ -208,6 +260,43 @@ export default function AdminGallery() {
           <p className="text-muted-foreground">Manage portfolio images</p>
         </div>
         <div className="flex gap-2">
+          <div className="flex bg-muted rounded-lg p-1 mr-2">
+            <Button
+              variant={viewMode === 'grid' ? 'secondary' : 'ghost'}
+              size="icon"
+              className="h-8 w-8"
+              onClick={() => setViewMode('grid')}
+            >
+              <Grid className="h-4 w-4" />
+            </Button>
+            <Button
+              variant={viewMode === 'list' ? 'secondary' : 'ghost'}
+              size="icon"
+              className="h-8 w-8"
+              onClick={() => setViewMode('list')}
+            >
+              <List className="h-4 w-4" />
+            </Button>
+          </div>
+
+          <input
+            type="file"
+            multiple
+            accept="image/*"
+            className="hidden"
+            id="bulk-upload"
+            onChange={(e) => {
+              if (e.target.files && e.target.files.length > 0) {
+                handleBulkUpload(e.target.files)
+              }
+              // Reset input so same files can be selected again if needed
+              e.target.value = ''
+            }}
+          />
+          <Button variant="outline" onClick={() => document.getElementById('bulk-upload')?.click()}>
+            <Upload className="mr-2 h-4 w-4" />
+            Bulk Upload
+          </Button>
           <Button variant="outline" onClick={() => setShowCategoriesDialog(true)}>
             <Tag className="mr-2 h-4 w-4" />
             Manage Categories
@@ -219,52 +308,114 @@ export default function AdminGallery() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-        {galleryItems.map((item) => (
-          <Card key={item.id} className="overflow-hidden">
-            <div className="relative aspect-square">
-              <Image
-                src={item.imageUrl}
-                alt={item.title}
-                fill
-                className="object-cover"
-              />
-              {item.featured && (
-                <Badge className="absolute top-2 right-2 bg-yellow-500">
-                  <Star className="h-3 w-3 mr-1" />
-                  Featured
-                </Badge>
-              )}
-            </div>
-            <CardContent className="p-4">
-              <h3 className="font-semibold truncate">{item.title}</h3>
-              {item.category && (
-                <Badge variant="outline" className="mt-2">{item.category}</Badge>
-              )}
-              <div className="flex gap-2 mt-4">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => openEditDialog(item)}
-                  className="flex-1"
-                >
-                  <Edit className="h-4 w-4 mr-1" />
-                  Edit
-                </Button>
-                <Button
-                  variant="destructive"
-                  size="sm"
-                  onClick={() => handleDelete(item.id)}
-                  className="flex-1"
-                >
-                  <Trash2 className="h-4 w-4 mr-1" />
-                  Delete
-                </Button>
+      {viewMode === 'grid' ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+          {galleryItems.map((item) => (
+            <Card key={item.id} className="overflow-hidden">
+              <div className="relative aspect-square">
+                <Image
+                  src={item.imageUrl}
+                  alt={item.title}
+                  fill
+                  className="object-cover"
+                />
+                {item.featured && (
+                  <Badge className="absolute top-2 right-2 bg-yellow-500">
+                    <Star className="h-3 w-3 mr-1" />
+                    Featured
+                  </Badge>
+                )}
               </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+              <CardContent className="p-4">
+                <h3 className="font-semibold truncate">{item.title}</h3>
+                {item.category && (
+                  <Badge variant="outline" className="mt-2">{item.category}</Badge>
+                )}
+                <div className="flex gap-2 mt-4">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => openEditDialog(item)}
+                    className="flex-1"
+                  >
+                    <Edit className="h-4 w-4 mr-1" />
+                    Edit
+                  </Button>
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    onClick={() => handleDelete(item.id)}
+                    className="flex-1"
+                  >
+                    <Trash2 className="h-4 w-4 mr-1" />
+                    Delete
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      ) : (
+        <div className="border rounded-lg overflow-hidden">
+          <table className="w-full text-sm text-left">
+            <thead className="bg-muted/50 text-muted-foreground uppercase">
+              <tr>
+                <th className="px-4 py-3">Image</th>
+                <th className="px-4 py-3">Title</th>
+                <th className="px-4 py-3">Category</th>
+                <th className="px-4 py-3">Featured</th>
+                <th className="px-4 py-3 text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y">
+              {galleryItems.map((item) => (
+                <tr key={item.id} className="hover:bg-muted/50 transition-colors">
+                  <td className="px-4 py-3 w-16">
+                    <div className="relative h-12 w-12 rounded overflow-hidden bg-muted">
+                      <Image
+                        src={item.imageUrl}
+                        alt={item.title}
+                        fill
+                        className="object-cover"
+                      />
+                    </div>
+                  </td>
+                  <td className="px-4 py-3 font-medium">{item.title}</td>
+                  <td className="px-4 py-3">
+                    {item.category && <Badge variant="outline">{item.category}</Badge>}
+                  </td>
+                  <td className="px-4 py-3">
+                    {item.featured && (
+                      <Badge className="bg-yellow-500 text-white hover:bg-yellow-600">
+                        <Star className="h-3 w-3 mr-1" /> Featured
+                      </Badge>
+                    )}
+                  </td>
+                  <td className="px-4 py-3 text-right">
+                    <div className="flex justify-end gap-2">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => openEditDialog(item)}
+                      >
+                        <Edit className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handleDelete(item.id)}
+                        className="text-destructive hover:text-destructive"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
 
       {galleryItems.length === 0 && (
         <div className="text-center py-12 border rounded-lg">

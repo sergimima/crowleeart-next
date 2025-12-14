@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { writeFile, mkdir } from 'fs/promises'
 import { join } from 'path'
 import { existsSync } from 'fs'
+import { validateImageFile, generateSafeFilename } from '@/lib/security'
 
 export async function POST(req: NextRequest) {
   try {
@@ -15,15 +16,19 @@ export async function POST(req: NextRequest) {
       )
     }
 
-    // Validate file type
-    if (!file.type.startsWith('image/')) {
+    // Validate file type via magic numbers
+    const bytes = await file.arrayBuffer()
+    const buffer = Buffer.from(bytes)
+
+    const isValidImage = await validateImageFile(buffer)
+    if (!isValidImage) {
       return NextResponse.json(
-        { error: 'File must be an image' },
+        { error: 'Invalid file content. Only real images are allowed.' },
         { status: 400 }
       )
     }
 
-    // Validate file size (5MB max)
+    // Validate strict size (5MB)
     if (file.size > 5 * 1024 * 1024) {
       return NextResponse.json(
         { error: 'File size must be less than 5MB' },
@@ -31,13 +36,8 @@ export async function POST(req: NextRequest) {
       )
     }
 
-    const bytes = await file.arrayBuffer()
-    const buffer = Buffer.from(bytes)
-
-    // Create unique filename
-    const timestamp = Date.now()
-    const originalName = file.name.replace(/\s+/g, '-')
-    const filename = `${timestamp}-${originalName}`
+    // Generate SAFE filename using UUID
+    const filename = generateSafeFilename(file.name)
 
     // Ensure upload directory exists
     const uploadDir = join(process.cwd(), 'public', 'uploads', 'bookings')

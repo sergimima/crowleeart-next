@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { ChevronDown, ChevronUp } from 'lucide-react'
+import CheckatradeWidget from '@/components/CheckatradeWidget'
 
 interface Service {
   id: number
@@ -280,6 +281,20 @@ export default function Home() {
               </p>
             </motion.div>
           </div>
+
+          {/* Checkatrade Reviews Widget */}
+          <motion.div
+            className="mt-12 flex justify-center"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.4 }}
+          >
+            <div className="bg-gradient-to-br from-white/10 to-white/5 p-8 rounded-lg border border-white/20 hover:border-white/30 transition-all max-w-2xl w-full">
+              <h3 className="text-2xl font-bold text-center mb-6 text-white">Customer Reviews</h3>
+              <CheckatradeWidget />
+            </div>
+          </motion.div>
         </div>
 
         <motion.button
