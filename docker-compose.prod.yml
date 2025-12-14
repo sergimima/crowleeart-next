@@ -32,12 +32,12 @@ services:
       dockerfile: Dockerfile
     container_name: crowleeart-app-prod
     restart: unless-stopped
-    security_opt:
-      - no-new-privileges:true
-    cap_drop:
-      - ALL
-    cap_add:
-      - NET_BIND_SERVICE
+    # security_opt:
+    #   - no-new-privileges:true
+    # cap_drop:
+    #   - ALL
+    # cap_add:
+    #   - NET_BIND_SERVICE
     # read_only: true
     # tmpfs:
     #   - /tmp:noexec,nosuid,size=100m
