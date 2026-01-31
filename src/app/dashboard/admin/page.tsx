@@ -6,7 +6,7 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContaine
 import { motion } from 'framer-motion'
 import { saveAs } from 'file-saver'
 import * as XLSX from 'xlsx'
-import jsPDF from 'jspdf'
+import { jsPDF } from 'jspdf'
 import 'jspdf-autotable'
 import {
   Users,
