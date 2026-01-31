@@ -52,7 +52,7 @@ RUN chmod +x ./entrypoint.sh
 
 # Crear directorios necesarios con permisos correctos
 RUN mkdir -p /app/public/uploads/bookings /app/public/uploads/gallery /app/.next/cache
-RUN chown -R nextjs:nodejs /app/public /app/.next/cache /app/entrypoint.sh
+RUN chown -R nextjs:nodejs /app/public /app/.next/cache /app/entrypoint.sh /app/node_modules/.prisma
 
 USER nextjs
 
