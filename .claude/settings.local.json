@@ -8,7 +8,11 @@
       "Bash(curl:*)",
       "Bash(.)",
       "Bash(npm install:*)",
-      "Bash(npx shadcn@latest add alert-dialog)"
+      "Bash(npx shadcn@latest add alert-dialog)",
+      "Bash(docker-compose:*)",
+      "Bash(node:*)",
+      "Bash(powershell -Command:*)",
+      "Bash(npm uninstall:*)"
     ],
     "deny": [],
     "ask": []

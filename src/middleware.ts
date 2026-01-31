@@ -34,6 +34,13 @@ export async function middleware(request: NextRequest) {
         return NextResponse.redirect(homeUrl)
       }
 
+      // Verificar rol para rutas de worker
+      if (pathname.startsWith('/dashboard/worker') && payload.role !== 'worker') {
+        // No es worker, redirigir a home
+        const homeUrl = new URL('/', request.url)
+        return NextResponse.redirect(homeUrl)
+      }
+
       // Token válido, continuar
       return NextResponse.next()
     } catch {

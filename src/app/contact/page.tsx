@@ -3,7 +3,8 @@
 import { useState, useEffect, FormEvent } from 'react'
 import { motion } from 'framer-motion'
 import { usePathname } from 'next/navigation'
-import { toast } from 'react-toastify'
+import { useTranslations } from 'next-intl'
+import { toast } from 'sonner'
 
 interface ContactForm {
   name: string
@@ -13,6 +14,7 @@ interface ContactForm {
 }
 
 export default function ContactPage() {
+  const t = useTranslations('contact')
   const [formData, setFormData] = useState<ContactForm>({
     name: '',
     email: '',
@@ -37,15 +39,15 @@ export default function ContactPage() {
 
   const validateForm = () => {
     if (!formData.name || !formData.email || !formData.subject || !formData.message) {
-      toast.error('Please fill in all required fields.')
+      toast.error(t('alertRequired'))
       return false
     }
     if (!formData.email.includes('@')) {
-      toast.error('Invalid email address.')
+      toast.error(t('alertInvalidEmail'))
       return false
     }
     if (formData.message.length < 10) {
-      toast.error('Message must be at least 10 characters.')
+      toast.error(t('alertMessageLength'))
       return false
     }
     return true
@@ -64,14 +66,14 @@ export default function ContactPage() {
       })
 
       if (response.ok) {
-        toast.success('Your message has been sent successfully!')
+        toast.success(t('alertSuccess'))
         setFormData({ name: '', email: '', subject: '', message: '' })
       } else {
-        toast.error('Error sending your message.')
+        toast.error(t('alertError'))
       }
     } catch (error) {
       console.error(error)
-      toast.error('Error sending your message.')
+      toast.error(t('alertError'))
     } finally {
       setLoading(false)
     }
@@ -84,12 +86,12 @@ export default function ContactPage() {
       animate={{ opacity: 1, y: 0 }}
     >
       <h1 className="text-4xl md:text-5xl font-bold text-center mb-10 text-purple-400">
-        Contact Us
+        {t('title')}
       </h1>
 
       <form onSubmit={handleSubmit} className="bg-white/10 p-8 rounded-lg border border-white/20 space-y-6">
         <div>
-          <label className="block text-sm font-medium mb-2">Name</label>
+          <label className="block text-sm font-medium mb-2">{t('name')}</label>
           <input
             type="text"
             name="name"
@@ -101,7 +103,7 @@ export default function ContactPage() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium mb-2">Email</label>
+          <label className="block text-sm font-medium mb-2">{t('email')}</label>
           <input
             type="email"
             name="email"
@@ -113,7 +115,7 @@ export default function ContactPage() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium mb-2">Subject</label>
+          <label className="block text-sm font-medium mb-2">{t('subject')}</label>
           <input
             type="text"
             name="subject"
@@ -125,14 +127,14 @@ export default function ContactPage() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium mb-2">Message</label>
+          <label className="block text-sm font-medium mb-2">{t('message')}</label>
           <textarea
             name="message"
             value={formData.message}
             onChange={handleChange}
             rows={6}
             className="w-full px-4 py-2 bg-white/5 border border-white/20 rounded focus:outline-none focus:border-purple-400 text-white resize-none"
-            placeholder="Write your message here..."
+            placeholder={t('placeholder')}
             required
           />
         </div>
@@ -142,12 +144,12 @@ export default function ContactPage() {
           disabled={loading}
           className="w-full bg-purple-600 hover:bg-purple-700 disabled:bg-gray-600 text-white font-bold py-3 rounded transition"
         >
-          {loading ? 'Sending...' : 'Send Message'}
+          {loading ? t('sending') : t('submit')}
         </button>
       </form>
 
       <div className="mt-10 text-center text-white/70">
-        <p>Or reach us directly:</p>
+        <p>{t('reachUs')}</p>
         <p className="mt-2">Email: info@crowleeart.com</p>
         <p>Phone: +44 7123 456 789</p>
       </div>

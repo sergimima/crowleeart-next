@@ -19,7 +19,7 @@ model User {
   name      String
   email     String    @unique
   password  String
-  role      String    @default("client") // "client", "admin", "professional"
+  role      String    @default("client") // "client", "admin", "professional", "worker"
   address   String?
   phone     String?
   createdAt DateTime  @default(now())
@@ -31,6 +31,7 @@ model User {
   messages  Message[]
   feedbacks Feedback[]
   surveyResponses SurveyResponse[]
+  timeLogs  TimeLog[]
 
   @@index([email])
   @@index([role])
@@ -177,4 +178,39 @@ model QRCode {
   updatedAt   DateTime @updatedAt
 
   @@index([refCode])
+}
+
+model TimeLog {
+  id              Int      @id @default(autoincrement())
+  userId          Int
+  clockInTime     DateTime
+  clockInLocation String   @db.Text // JSON: {latitude, longitude, timestamp, accuracy}
+  clockOutTime    DateTime?
+  clockOutLocation String? @db.Text // JSON: {latitude, longitude, timestamp, accuracy}
+  workerNote      String?  @db.Text
+  adminNote       String?  @db.Text
+  status          String   @default("pending") // "pending", "approved", "rejected"
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([status])
+  @@index([clockInTime])
+  @@index([clockOutTime])
+}
+
+model InvitationToken {
+  id        Int      @id @default(autoincrement())
+  token     String   @unique
+  role      String   // "client" or "worker"
+  expiresAt DateTime
+  usedAt    DateTime?
+  usedBy    Int?     // userId who used this token
+  createdAt DateTime @default(now())
+
+  @@index([token])
+  @@index([expiresAt])
 }

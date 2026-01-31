@@ -1,13 +1,21 @@
 'use client'
 
-import { useState, FormEvent } from 'react'
+import { useState, useEffect, FormEvent } from 'react'
 import { motion } from 'framer-motion'
 import { toast } from 'sonner'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
+import { Suspense } from 'react'
+import { useTranslations } from 'next-intl'
 
-export default function LoginPage() {
+function LoginForm() {
   const router = useRouter()
+  const searchParams = useSearchParams()
+  const inviteToken = searchParams.get('invite')
+  const t = useTranslations('login')
+
   const [isRegister, setIsRegister] = useState(false)
+  const [inviteRole, setInviteRole] = useState<string | null>(null)
+  const [inviteValidating, setInviteValidating] = useState(false)
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -18,6 +26,33 @@ export default function LoginPage() {
   })
   const [loading, setLoading] = useState(false)
 
+  // Validate invite token on mount
+  useEffect(() => {
+    if (inviteToken) {
+      setInviteValidating(true)
+      setIsRegister(true) // Switch to register mode
+
+      fetch(`/api/invitations/validate?token=${inviteToken}`)
+        .then(res => res.json())
+        .then(data => {
+          if (data.valid) {
+            setInviteRole(data.role)
+            toast.success(t('inviteValid', { role: data.role }))
+          } else {
+            toast.error(data.error || t('inviteInvalid'))
+            setInviteRole(null)
+          }
+        })
+        .catch(() => {
+          toast.error(t('inviteError'))
+          setInviteRole(null)
+        })
+        .finally(() => {
+          setInviteValidating(false)
+        })
+    }
+  }, [inviteToken])
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
     setFormData(prev => ({ ...prev, [name]: value }))
@@ -27,32 +62,32 @@ export default function LoginPage() {
     const { name, email, password, confirmPassword, phone } = formData
 
     if (!email.trim().includes('@')) {
-      toast.error('Invalid email address.')
+      toast.error(t('alertInvalidEmail'))
       return false
     }
     if (isRegister) {
       if (password.trim().length < 8) {
-        toast.error('Password must be at least 8 characters.')
+        toast.error(t('alertPasswordLength'))
         return false
       }
       if (!/[A-Z]/.test(password)) {
-        toast.error('Password must contain at least one uppercase letter.')
+        toast.error(t('alertPasswordUppercase'))
         return false
       }
       if (!/[0-9]/.test(password)) {
-        toast.error('Password must contain at least one number.')
+        toast.error(t('alertPasswordNumber'))
         return false
       }
       if (password !== confirmPassword) {
-        toast.error('Passwords do not match.')
+        toast.error(t('alertPasswordsMatch'))
         return false
       }
       if (!/^\d+$/.test(phone.trim())) {
-        toast.error('Invalid phone number.')
+        toast.error(t('alertInvalidPhone'))
         return false
       }
       if (!name.trim()) {
-        toast.error('Name is required.')
+        toast.error(t('alertNameRequired'))
         return false
       }
     }
@@ -77,7 +112,10 @@ export default function LoginPage() {
         const response = await fetch('/api/auth/register', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ ...cleanedData, role: 'client' }),
+          body: JSON.stringify({
+            ...cleanedData,
+            inviteToken: inviteToken || undefined
+          }),
           credentials: 'include' // Important para cookies
         })
 
@@ -88,6 +126,8 @@ export default function LoginPage() {
           // Auto-login después de registro, redirigir con window.location
           if (data.role === 'admin') {
             window.location.href = '/dashboard/admin'
+          } else if (data.role === 'worker') {
+            window.location.href = '/dashboard/worker'
           } else {
             window.location.href = '/dashboard/client'
           }
@@ -116,6 +156,8 @@ export default function LoginPage() {
           // Redirigir según rol
           if (data.role === 'admin') {
             window.location.href = '/dashboard/admin'
+          } else if (data.role === 'worker') {
+            window.location.href = '/dashboard/worker'
           } else {
             window.location.href = '/dashboard/client'
           }
@@ -147,72 +189,117 @@ export default function LoginPage() {
         animate={{ opacity: 1, y: 0 }}
       >
         <h1 className="text-2xl font-bold text-center text-purple-400">
-          {isRegister ? 'Create Account' : 'Login'}
+          {isRegister ? t('createAccount') : t('title')}
         </h1>
 
+        {/* Show invite role badge */}
+        {inviteToken && inviteRole && (
+          <div className="bg-green-500/20 border border-green-500/50 rounded-lg p-3 text-center">
+            <p className="text-green-400 text-sm">
+              {t('registeringAs')} <span className="font-bold capitalize">{inviteRole}</span>
+            </p>
+          </div>
+        )}
+
+        {inviteValidating && (
+          <div className="bg-blue-500/20 border border-blue-500/50 rounded-lg p-3 text-center">
+            <p className="text-blue-400 text-sm">{t('validatingInvite')}</p>
+          </div>
+        )}
+
         {isRegister && (
+          <div>
+            <label htmlFor="login-name" className="sr-only">{t('name')}</label>
+            <input
+              id="login-name"
+              type="text"
+              name="name"
+              placeholder={t('name')}
+              value={formData.name}
+              onChange={handleChange}
+              className={inputStyle}
+              required
+              autoComplete="name"
+            />
+          </div>
+        )}
+
+        <div>
+          <label htmlFor="login-email" className="sr-only">{t('email')}</label>
           <input
-            type="text"
-            name="name"
-            placeholder="Name"
-            value={formData.name}
+            id="login-email"
+            type="email"
+            name="email"
+            placeholder={t('email')}
+            value={formData.email}
             onChange={handleChange}
             className={inputStyle}
             required
+            autoComplete="email"
           />
-        )}
+        </div>
 
-        <input
-          type="email"
-          name="email"
-          placeholder="Email"
-          value={formData.email}
-          onChange={handleChange}
-          className={inputStyle}
-          required
-        />
-
-        <input
-          type="password"
-          name="password"
-          placeholder="Password"
-          value={formData.password}
-          onChange={handleChange}
-          className={inputStyle}
-          required
-        />
+        <div>
+          <label htmlFor="login-password" className="sr-only">{t('password')}</label>
+          <input
+            id="login-password"
+            type="password"
+            name="password"
+            placeholder={t('password')}
+            value={formData.password}
+            onChange={handleChange}
+            className={inputStyle}
+            required
+            autoComplete={isRegister ? 'new-password' : 'current-password'}
+          />
+        </div>
 
         {isRegister && (
           <>
-            <input
-              type="password"
-              name="confirmPassword"
-              placeholder="Confirm Password"
-              value={formData.confirmPassword}
-              onChange={handleChange}
-              className={inputStyle}
-              required
-            />
-            <div className="text-xs text-white/70 -mt-2">
-              Password must be at least 8 characters with one uppercase letter and one number
+            <div>
+              <label htmlFor="login-confirmPassword" className="sr-only">{t('confirmPassword')}</label>
+              <input
+                id="login-confirmPassword"
+                type="password"
+                name="confirmPassword"
+                placeholder={t('confirmPassword')}
+                value={formData.confirmPassword}
+                onChange={handleChange}
+                className={inputStyle}
+                required
+                autoComplete="new-password"
+              />
             </div>
-            <input
-              type="text"
-              name="address"
-              placeholder="Address (optional)"
-              value={formData.address}
-              onChange={handleChange}
-              className={inputStyle}
-            />
-            <input
-              type="tel"
-              name="phone"
-              placeholder="Phone"
-              value={formData.phone}
-              onChange={handleChange}
-              className={inputStyle}
-              required
-            />
+            <div className="text-xs text-white/70 -mt-2">
+              {t('passwordHint')}
+            </div>
+            <div>
+              <label htmlFor="login-address" className="sr-only">{t('address')}</label>
+              <input
+                id="login-address"
+                type="text"
+                name="address"
+                placeholder={t('address')}
+                value={formData.address}
+                onChange={handleChange}
+                className={inputStyle}
+                autoComplete="street-address"
+              />
+            </div>
+            <div>
+              <label htmlFor="login-phone" className="sr-only">{t('phone')}</label>
+              <input
+                id="login-phone"
+                type="tel"
+                name="phone"
+                placeholder={t('phone')}
+                value={formData.phone}
+                onChange={handleChange}
+                className={inputStyle}
+                required
+                autoComplete="tel"
+              />
+            </div>
           </>
         )}
 
@@ -221,17 +308,32 @@ export default function LoginPage() {
           disabled={loading}
           className="w-full bg-purple-600 hover:bg-purple-700 disabled:bg-gray-600 text-white font-bold py-2 rounded transition"
         >
-          {loading ? 'Processing...' : (isRegister ? 'Register' : 'Login')}
+          {loading ? t('processing') : (isRegister ? t('submitRegister') : t('submit'))}
         </button>
 
-        <button
-          type="button"
-          onClick={() => setIsRegister(!isRegister)}
-          className="w-full text-purple-400 hover:underline text-sm"
-        >
-          {isRegister ? 'Already have an account? Login' : 'Don\'t have an account? Register'}
-        </button>
+        {/* Only show toggle if not using invite link */}
+        {!inviteToken && (
+          <button
+            type="button"
+            onClick={() => setIsRegister(!isRegister)}
+            className="w-full text-purple-400 hover:underline text-sm"
+          >
+            {isRegister ? t('haveAccount') : t('noAccount')}
+          </button>
+        )}
       </motion.form>
     </motion.div>
+  )
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gray-900 text-white flex items-center justify-center">
+        <div className="text-purple-400">Loading...</div>
+      </div>
+    }>
+      <LoginForm />
+    </Suspense>
   )
 }

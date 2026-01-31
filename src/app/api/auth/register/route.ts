@@ -7,7 +7,7 @@ const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-producti
 
 export async function POST(req: NextRequest) {
   try {
-    const { name, email, password, phone, address, role } = await req.json()
+    const { name, email, password, phone, address, inviteToken } = await req.json()
 
     if (!name || !email || !password || !phone) {
       return NextResponse.json(
@@ -49,6 +49,39 @@ export async function POST(req: NextRequest) {
       )
     }
 
+    // Determine role based on invite token
+    let userRole = 'client' // Default role
+
+    if (inviteToken) {
+      // Validate invitation token
+      const invitation = await prisma.invitationToken.findUnique({
+        where: { token: inviteToken }
+      })
+
+      if (!invitation) {
+        return NextResponse.json(
+          { error: 'Invalid invitation token' },
+          { status: 400 }
+        )
+      }
+
+      if (invitation.usedAt) {
+        return NextResponse.json(
+          { error: 'This invitation has already been used' },
+          { status: 400 }
+        )
+      }
+
+      if (new Date() > invitation.expiresAt) {
+        return NextResponse.json(
+          { error: 'This invitation has expired' },
+          { status: 400 }
+        )
+      }
+
+      userRole = invitation.role
+    }
+
     const hashedPassword = await bcrypt.hash(password, 10)
 
     const user = await prisma.user.create({
@@ -58,9 +91,20 @@ export async function POST(req: NextRequest) {
         password: hashedPassword,
         phone,
         address: address || null,
-        role: role === 'admin' ? 'admin' : 'client'
+        role: userRole
       }
     })
+
+    // Mark invitation as used if one was provided
+    if (inviteToken) {
+      await prisma.invitationToken.update({
+        where: { token: inviteToken },
+        data: {
+          usedAt: new Date(),
+          usedBy: user.id
+        }
+      })
+    }
 
     // Crear token JWT para auto-login
     const token = jwt.sign(

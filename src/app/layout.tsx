@@ -1,8 +1,11 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { getLocale } from 'next-intl/server';
+import { NextIntlClientProvider } from 'next-intl';
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import WhatsAppWidget from "@/components/WhatsAppWidget";
+import CookieConsent from "@/components/CookieConsent";
 import ClientProviders from "@/components/ClientProviders";
 import MainWrapper from "@/components/MainWrapper";
 import { Toaster } from 'sonner';
@@ -17,27 +20,31 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const locale = await getLocale()
   return (
-    <html lang="en" className="dark">
+    <html lang={locale} className="dark">
       <body className="antialiased bg-gradient-to-br from-[#0a0f1e] via-[#0f1729] to-[#1a1f3a] h-screen overflow-hidden relative">
         <div className="fixed inset-0 pointer-events-none -z-10">
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_#3b82f615,transparent_50%),radial-gradient(ellipse_at_bottom,_#8b5cf615,transparent_50%)]" />
           <div className="absolute inset-0 bg-[linear-gradient(to_right,_#ffffff08_1px,_transparent_1px),linear-gradient(to_bottom,_#ffffff08_1px,_transparent_1px)] bg-[length:40px_40px]" />
         </div>
-        <Navbar />
-        <ClientProviders>
-          <MainWrapper>
-            {children}
-            <Footer />
-          </MainWrapper>
-        </ClientProviders>
-        <WhatsAppWidget />
-        <Toaster position="bottom-right" theme="dark" richColors />
+        <NextIntlClientProvider>
+          <Navbar />
+          <ClientProviders>
+            <MainWrapper>
+              {children}
+              <Footer />
+            </MainWrapper>
+          </ClientProviders>
+          <WhatsAppWidget />
+          <CookieConsent />
+          <Toaster position="bottom-right" theme="dark" richColors />
+        </NextIntlClientProvider>
       </body>
     </html>
   );

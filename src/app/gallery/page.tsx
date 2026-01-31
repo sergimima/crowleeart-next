@@ -5,6 +5,7 @@ import { motion } from 'framer-motion'
 import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { useTranslations } from 'next-intl'
 import { X, Star, Filter } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -21,6 +22,7 @@ interface GalleryItem {
 }
 
 export default function GalleryPage() {
+  const t = useTranslations('gallery')
   const [galleryItems, setGalleryItems] = useState<GalleryItem[]>([])
   const [filteredItems, setFilteredItems] = useState<GalleryItem[]>([])
   const [loading, setLoading] = useState(true)
@@ -70,7 +72,7 @@ export default function GalleryPage() {
       <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin h-12 w-12 border-4 border-primary border-t-transparent rounded-full mx-auto mb-4"></div>
-          <p className="text-muted-foreground">Loading gallery...</p>
+          <p className="text-muted-foreground">{t('loading')}</p>
         </div>
       </div>
     )
@@ -86,10 +88,10 @@ export default function GalleryPage() {
           className="text-center mb-12"
         >
           <h1 className="text-5xl md:text-6xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-600">
-            Our Gallery
+            {t('title')}
           </h1>
           <p className="text-xl text-gray-300 max-w-2xl mx-auto">
-            Explore our portfolio of completed work and creative projects
+            {t('subtitle')}
           </p>
         </motion.div>
 
@@ -105,10 +107,10 @@ export default function GalleryPage() {
               <Filter className="h-5 w-5 text-gray-400" />
               <Select value={categoryFilter} onValueChange={setCategoryFilter}>
                 <SelectTrigger className="w-[200px]">
-                  <SelectValue placeholder="Filter by category" />
+                  <SelectValue placeholder={t('filterPlaceholder')} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">All Categories</SelectItem>
+                  <SelectItem value="all">{t('allCategories')}</SelectItem>
                   {categories.map(category => (
                     <SelectItem key={category} value={category!}>
                       {category}
@@ -155,7 +157,7 @@ export default function GalleryPage() {
                   {item.featured && (
                     <Badge className="absolute top-2 right-2 bg-yellow-500">
                       <Star className="h-3 w-3 mr-1" />
-                      Featured
+                      {t('featured')}
                     </Badge>
                   )}
                 </div>
@@ -164,7 +166,7 @@ export default function GalleryPage() {
           </motion.div>
         ) : (
           <div className="text-center py-20">
-            <p className="text-gray-400 text-lg">No gallery items yet. Check back soon!</p>
+            <p className="text-gray-400 text-lg">{t('noItems')}</p>
           </div>
         )}
 
@@ -176,16 +178,16 @@ export default function GalleryPage() {
           transition={{ delay: 0.4 }}
         >
           <h3 className="text-3xl font-semibold text-white mb-4">
-            ✨ Impressed with our work?
+            {t('cta.title')}
           </h3>
           <p className="text-white/80 mb-6">
-            We bring this quality to your home. Book your service today or contact us for a personalized quote.
+            {t('cta.description')}
           </p>
           <Link
             href="/booking"
             className="inline-block bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2 px-6 rounded shadow-md transition"
           >
-            Book Now
+            {t('cta.button')}
           </Link>
         </motion.div>
       </div>

@@ -33,7 +33,7 @@ export async function GET(req: NextRequest) {
       )
     }
 
-    const [services, bookings, messages, reviews, feedbacks, surveys, users, galleryItems, qrCodes] = await Promise.all([
+    const [services, bookings, messages, reviews, feedbacks, surveys, users, galleryItems, qrCodes, timeLogs, invitations] = await Promise.all([
       prisma.service.findMany(),
       prisma.booking.findMany({
         include: {
@@ -71,7 +71,16 @@ export async function GET(req: NextRequest) {
         }
       }),
       prisma.galleryItem.findMany(),
-      prisma.qRCode.findMany()
+      prisma.qRCode.findMany(),
+      prisma.timeLog.findMany({
+        include: {
+          user: { select: { name: true, email: true } }
+        },
+        orderBy: { clockInTime: 'desc' }
+      }),
+      prisma.invitationToken.findMany({
+        orderBy: { createdAt: 'desc' }
+      })
     ])
 
     return NextResponse.json({
@@ -83,7 +92,9 @@ export async function GET(req: NextRequest) {
       surveys,
       users,
       galleryItems,
-      qrCodes
+      qrCodes,
+      timeLogs,
+      invitations
     })
   } catch (error) {
     console.error('Admin data fetch error:', error)

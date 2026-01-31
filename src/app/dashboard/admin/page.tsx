@@ -22,12 +22,20 @@ import {
   TrendingUp,
   FileText,
   Image as ImageIcon,
-  QrCode
+  QrCode,
+  Clock,
+  Link2
 } from 'lucide-react'
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Badge } from '@/components/ui/badge'
 import { toast } from 'sonner'
@@ -42,6 +50,8 @@ import AdminFeedback from '@/components/admin/AdminFeedback'
 import AdminSurveys from '@/components/admin/AdminSurveys'
 import AdminGallery from '@/components/admin/AdminGallery'
 import AdminQRCodes from '@/components/admin/AdminQRCodes'
+import AdminTimeLogs from '@/components/admin/AdminTimeLogs'
+import AdminInvitations from '@/components/admin/AdminInvitations'
 
 type AdminData = {
   services: any[]
@@ -53,6 +63,8 @@ type AdminData = {
   users: any[]
   galleryItems: any[]
   qrCodes: any[]
+  timeLogs: any[]
+  invitations: any[]
 }
 
 const COLORS = ['#8884d8', '#82ca9d', '#ffc658', '#ff8042', '#8dd1e1', '#a4de6c']
@@ -72,6 +84,8 @@ export default function AdminDashboard() {
     users: [],
     galleryItems: [],
     qrCodes: [],
+    timeLogs: [],
+    invitations: [],
   })
   const [loading, setLoading] = useState(true)
 
@@ -94,6 +108,8 @@ export default function AdminDashboard() {
           users: data.users ?? [],
           galleryItems: data.galleryItems ?? [],
           qrCodes: data.qrCodes ?? [],
+          timeLogs: data.timeLogs ?? [],
+          invitations: data.invitations ?? [],
         })
         toast.success('Dashboard data loaded successfully')
       } else if (response.status === 401 || response.status === 403) {
@@ -197,6 +213,7 @@ export default function AdminDashboard() {
 
   const menuItems = [
     { key: 'users', label: 'Users', count: adminData.users.length, icon: Users },
+    { key: 'invitations', label: 'Invitations', count: adminData.invitations.length, icon: Link2 },
     { key: 'bookings', label: 'Bookings', count: adminData.bookings.length, icon: Calendar },
     { key: 'services', label: 'Services', count: adminData.services.length, icon: Settings },
     { key: 'messages', label: 'Messages', count: adminData.messages.length, icon: MessageSquare },
@@ -205,31 +222,70 @@ export default function AdminDashboard() {
     { key: 'surveys', label: 'Surveys', count: adminData.surveys.length, icon: ClipboardList },
     { key: 'gallery', label: 'Gallery', count: adminData.galleryItems.length, icon: ImageIcon },
     { key: 'qrcodes', label: 'QR Codes', count: adminData.qrCodes.length, icon: QrCode },
+    { key: 'timelogs', label: 'Time Logs', count: adminData.timeLogs.length, icon: Clock },
   ]
 
-  const StatCard = ({ title, value, icon: Icon, trend }: any) => (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      whileHover={{ scale: 1.02 }}
-    >
-      <Card>
-        <CardHeader className="flex flex-row items-center justify-between pb-2">
-          <CardTitle className="text-sm font-medium">{title}</CardTitle>
-          <Icon className="h-4 w-4 text-muted-foreground" />
-        </CardHeader>
-        <CardContent>
-          <div className="text-2xl font-bold">{value}</div>
-          {trend && (
-            <p className="text-xs text-muted-foreground flex items-center gap-1 mt-1">
-              <TrendingUp className="h-3 w-3" />
-              {trend}
-            </p>
-          )}
+  const goToSection = (section: string) => {
+    setActiveTab('manage')
+    setActiveManageSection(section)
+  }
+
+  const StatCard = ({
+    title,
+    value,
+    icon: Icon,
+    trend,
+    sectionKey,
+    onSectionClick,
+  }: {
+    title: string
+    value: number
+    icon: React.ComponentType<{ className?: string }>
+    trend?: string
+    sectionKey?: string
+    onSectionClick?: (section: string) => void
+  }) => {
+    const isClickable = sectionKey && onSectionClick
+    const content = (
+      <Card className={`overflow-hidden transition-colors ${isClickable ? 'hover:bg-muted/50' : ''}`}>
+        <CardContent className="p-3 flex items-center gap-3">
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-muted">
+            <Icon className="h-4 w-4 text-muted-foreground" />
+          </div>
+          <div className="min-w-0 flex-1">
+            <p className="text-xs font-medium text-muted-foreground truncate">{title}</p>
+            <p className="text-lg font-bold tabular-nums">{value}</p>
+            {trend && (
+              <p className="text-[10px] text-muted-foreground flex items-center gap-0.5 mt-0.5">
+                <TrendingUp className="h-2.5 w-2.5" />
+                {trend}
+              </p>
+            )}
+          </div>
         </CardContent>
       </Card>
-    </motion.div>
-  )
+    )
+    return (
+      <motion.div
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        whileHover={isClickable ? { scale: 1.02 } : undefined}
+      >
+        {isClickable ? (
+          <button
+            type="button"
+            className="w-full text-left rounded-lg border-0 bg-transparent p-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+            onClick={() => onSectionClick(sectionKey!)}
+            aria-label={`Go to ${title} management`}
+          >
+            {content}
+          </button>
+        ) : (
+          content
+        )}
+      </motion.div>
+    )
+  }
 
   const renderManageSection = () => {
     switch (activeManageSection) {
@@ -251,157 +307,207 @@ export default function AdminDashboard() {
         return <AdminGallery />
       case 'qrcodes':
         return <AdminQRCodes onUpdate={fetchAdminData} />
+      case 'timelogs':
+        return <AdminTimeLogs timeLogs={adminData.timeLogs} onUpdate={fetchAdminData} />
+      case 'invitations':
+        return <AdminInvitations onUpdate={fetchAdminData} />
       default:
         return <p className="text-muted-foreground">Select a section from the menu.</p>
     }
   }
 
   return (
-    <div className="min-h-screen p-6">
-      <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-8">
+    <div className="min-h-screen p-4 md:p-6">
+      <motion.div initial={{ opacity: 0, y: -12 }} animate={{ opacity: 1, y: 0 }} className="max-w-7xl mx-auto">
+        {/* Header - compact */}
+        <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
           <div>
-            <h1 className="text-4xl font-bold tracking-tight">Admin Dashboard</h1>
-            <p className="text-muted-foreground mt-2">Manage your business operations</p>
+            <h1 className="text-2xl md:text-3xl font-bold tracking-tight">Admin Dashboard</h1>
+            <p className="text-sm text-muted-foreground mt-0.5">Manage your business operations</p>
           </div>
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
             <Button onClick={fetchAdminData} variant="outline" size="sm">
-              <RefreshCw className="mr-2 h-4 w-4" />
+              <RefreshCw className="mr-1.5 h-3.5 w-3.5" />
               Refresh
             </Button>
-            <Button onClick={exportToPDF} variant="outline" size="sm">
-              <FileText className="mr-2 h-4 w-4" />
-              Export PDF
-            </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="sm">
+                  <Download className="mr-1.5 h-3.5 w-3.5" />
+                  Export
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={exportToPDF}>
+                  <FileText className="mr-2 h-3.5 w-3.5" />
+                  PDF report
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => exportToExcel(adminData.bookings, 'Bookings')}>
+                  Excel: Bookings
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => exportToExcel(adminData.services, 'Services')}>
+                  Excel: Services
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => exportToExcel(adminData.users, 'Users')}>
+                  Excel: Users
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => exportToExcel(adminData.reviews, 'Reviews')}>
+                  Excel: Reviews
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
 
         {/* Tabs */}
-        <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as any)} className="space-y-6">
-          <TabsList>
-            <TabsTrigger value="dashboard" className="flex items-center gap-2">
-              <LayoutDashboard className="h-4 w-4" />
+        <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as any)} className="space-y-4">
+          <TabsList className="h-9">
+            <TabsTrigger value="dashboard" className="flex items-center gap-1.5 text-sm px-3">
+              <LayoutDashboard className="h-3.5 w-3.5" />
               Dashboard
             </TabsTrigger>
-            <TabsTrigger value="manage" className="flex items-center gap-2">
-              <Settings className="h-4 w-4" />
+            <TabsTrigger value="manage" className="flex items-center gap-1.5 text-sm px-3">
+              <Settings className="h-3.5 w-3.5" />
               Manage
             </TabsTrigger>
           </TabsList>
 
-          {/* Dashboard Tab */}
-          <TabsContent value="dashboard" className="space-y-6">
-            {/* Stats Grid */}
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-              <StatCard title="Total Services" value={adminData.services.length} icon={Settings} />
-              <StatCard title="Total Bookings" value={adminData.bookings.length} icon={Calendar} />
-              <StatCard title="Messages" value={adminData.messages.length} icon={MessageSquare} />
-              <StatCard title="Reviews" value={adminData.reviews.length} icon={Star} />
+          {/* Dashboard Tab - compact */}
+          <TabsContent value="dashboard" className="space-y-4">
+            {/* Stats: single compact row - click goes to Manage tab */}
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-2 md:gap-3">
+              <StatCard
+                title="Services"
+                value={adminData.services.length}
+                icon={Settings}
+                sectionKey="services"
+                onSectionClick={goToSection}
+              />
+              <StatCard
+                title="Bookings"
+                value={adminData.bookings.length}
+                icon={Calendar}
+                sectionKey="bookings"
+                onSectionClick={goToSection}
+              />
+              <StatCard
+                title="Messages"
+                value={adminData.messages.length}
+                icon={MessageSquare}
+                sectionKey="messages"
+                onSectionClick={goToSection}
+              />
+              <StatCard
+                title="Reviews"
+                value={adminData.reviews.length}
+                icon={Star}
+                sectionKey="reviews"
+                onSectionClick={goToSection}
+              />
+              <StatCard
+                title="Feedback"
+                value={adminData.feedbacks.length}
+                icon={MessageCircle}
+                sectionKey="feedback"
+                onSectionClick={goToSection}
+              />
+              <StatCard
+                title="Surveys"
+                value={adminData.surveys.length}
+                icon={ClipboardList}
+                sectionKey="surveys"
+                onSectionClick={goToSection}
+              />
+              <StatCard
+                title="Users"
+                value={adminData.users.length}
+                icon={Users}
+                sectionKey="users"
+                onSectionClick={goToSection}
+              />
             </div>
 
-            {/* Additional Stats */}
-            <div className="grid gap-4 md:grid-cols-3">
-              <StatCard title="Feedback" value={adminData.feedbacks.length} icon={MessageCircle} />
-              <StatCard title="Surveys" value={adminData.surveys.length} icon={ClipboardList} />
-              <StatCard title="Users" value={adminData.users.length} icon={Users} />
-            </div>
-
-            {/* Export Buttons */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Export Data</CardTitle>
-                <CardDescription>Download your data in various formats</CardDescription>
-              </CardHeader>
-              <CardContent className="flex flex-wrap gap-3">
-                <Button onClick={() => exportToExcel(adminData.bookings, 'Bookings')} variant="outline">
-                  <Download className="mr-2 h-4 w-4" />
-                  Export Bookings
-                </Button>
-                <Button onClick={() => exportToExcel(adminData.services, 'Services')} variant="outline">
-                  <Download className="mr-2 h-4 w-4" />
-                  Export Services
-                </Button>
-                <Button onClick={() => exportToExcel(adminData.users, 'Users')} variant="outline">
-                  <Download className="mr-2 h-4 w-4" />
-                  Export Users
-                </Button>
-                <Button onClick={() => exportToExcel(adminData.reviews, 'Reviews')} variant="outline">
-                  <Download className="mr-2 h-4 w-4" />
-                  Export Reviews
-                </Button>
-              </CardContent>
-            </Card>
-
-            {/* Charts Grid */}
-            <div className="grid gap-6 md:grid-cols-2">
+            {/* Charts Grid - less height */}
+            <div className="grid gap-4 md:grid-cols-2">
               <ChartCard title="Bookings by Service" loading={!serviceBookings.length}>
                 <BarChart data={serviceBookings}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                  <XAxis dataKey="name" stroke="hsl(var(--muted-foreground))" />
-                  <YAxis allowDecimals={false} stroke="hsl(var(--muted-foreground))" />
+                  <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+                  <XAxis dataKey="name" stroke="#9ca3af" tick={{ fill: '#9ca3af' }} fontSize={12} />
+                  <YAxis allowDecimals={false} stroke="#9ca3af" tick={{ fill: '#9ca3af' }} fontSize={12} />
                   <Tooltip
                     contentStyle={{
-                      backgroundColor: 'hsl(var(--card))',
-                      border: '1px solid hsl(var(--border))',
-                      borderRadius: '8px'
+                      backgroundColor: '#1f2937',
+                      border: '1px solid #374151',
+                      borderRadius: '8px',
+                      color: '#f3f4f6'
                     }}
+                    labelStyle={{ color: '#f3f4f6' }}
+                    itemStyle={{ color: '#f3f4f6' }}
                   />
-                  <Legend />
+                  <Legend wrapperStyle={{ color: '#f3f4f6' }} formatter={(value) => <span style={{ color: '#f3f4f6' }}>{value}</span>} />
                   <Bar dataKey="bookings" fill="#82ca9d" />
                 </BarChart>
               </ChartCard>
 
               <ChartCard title="Review Ratings Distribution" loading={!reviewData.length}>
                 <PieChart>
-                  <Pie data={reviewData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={100} label>
+                  <Pie data={reviewData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={100} label={{ fill: '#f3f4f6' }}>
                     {reviewData.map((_, index) => (
                       <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                     ))}
                   </Pie>
                   <Tooltip
                     contentStyle={{
-                      backgroundColor: 'hsl(var(--card))',
-                      border: '1px solid hsl(var(--border))',
-                      borderRadius: '8px'
+                      backgroundColor: '#1f2937',
+                      border: '1px solid #374151',
+                      borderRadius: '8px',
+                      color: '#f3f4f6'
                     }}
+                    labelStyle={{ color: '#f3f4f6' }}
+                    itemStyle={{ color: '#f3f4f6' }}
                   />
-                  <Legend />
+                  <Legend wrapperStyle={{ color: '#f3f4f6' }} formatter={(value) => <span style={{ color: '#f3f4f6' }}>{value}</span>} />
                 </PieChart>
               </ChartCard>
 
               <ChartCard title="Feedback Quality Scores" loading={!feedbackQuality.length}>
                 <BarChart data={feedbackQuality}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                  <XAxis dataKey="name" stroke="hsl(var(--muted-foreground))" />
-                  <YAxis allowDecimals={false} stroke="hsl(var(--muted-foreground))" />
+                  <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+                  <XAxis dataKey="name" stroke="#9ca3af" tick={{ fill: '#9ca3af' }} fontSize={12} />
+                  <YAxis allowDecimals={false} stroke="#9ca3af" tick={{ fill: '#9ca3af' }} fontSize={12} />
                   <Tooltip
                     contentStyle={{
-                      backgroundColor: 'hsl(var(--card))',
-                      border: '1px solid hsl(var(--border))',
-                      borderRadius: '8px'
+                      backgroundColor: '#1f2937',
+                      border: '1px solid #374151',
+                      borderRadius: '8px',
+                      color: '#f3f4f6'
                     }}
+                    labelStyle={{ color: '#f3f4f6' }}
+                    itemStyle={{ color: '#f3f4f6' }}
                   />
-                  <Legend />
+                  <Legend wrapperStyle={{ color: '#f3f4f6' }} formatter={(value) => <span style={{ color: '#f3f4f6' }}>{value}</span>} />
                   <Bar dataKey="quality" fill="#8884d8" />
                 </BarChart>
               </ChartCard>
 
               <ChartCard title="Client Referral Sources" loading={!referralChartData.length}>
                 <PieChart>
-                  <Pie data={referralChartData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={100} label>
+                  <Pie data={referralChartData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={100} label={{ fill: '#f3f4f6' }}>
                     {referralChartData.map((_, index) => (
                       <Cell key={`cell-${index}`} fill={REFERRAL_COLORS[index % REFERRAL_COLORS.length]} />
                     ))}
                   </Pie>
                   <Tooltip
                     contentStyle={{
-                      backgroundColor: 'hsl(var(--card))',
-                      border: '1px solid hsl(var(--border))',
-                      borderRadius: '8px'
+                      backgroundColor: '#1f2937',
+                      border: '1px solid #374151',
+                      borderRadius: '8px',
+                      color: '#f3f4f6'
                     }}
+                    labelStyle={{ color: '#f3f4f6' }}
+                    itemStyle={{ color: '#f3f4f6' }}
                   />
-                  <Legend />
+                  <Legend wrapperStyle={{ color: '#f3f4f6' }} formatter={(value) => <span style={{ color: '#f3f4f6' }}>{value}</span>} />
                 </PieChart>
               </ChartCard>
             </div>
@@ -409,11 +515,11 @@ export default function AdminDashboard() {
 
           {/* Manage Tab */}
           <TabsContent value="manage" className="space-y-6">
-            <div className="grid gap-6 md:grid-cols-4">
-              {/* Sidebar */}
-              <Card className="md:col-span-1">
-                <CardHeader>
-                  <CardTitle className="text-lg">Sections</CardTitle>
+            <div className="flex gap-6">
+              {/* Sidebar - Fixed narrow width */}
+              <Card className="w-48 flex-shrink-0">
+                <CardHeader className="py-3 px-3">
+                  <CardTitle className="text-sm">Sections</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-1 p-2">
                   {menuItems.map(item => {
@@ -423,11 +529,12 @@ export default function AdminDashboard() {
                         key={item.key}
                         onClick={() => setActiveManageSection(item.key)}
                         variant={activeManageSection === item.key ? 'default' : 'ghost'}
-                        className="w-full justify-start"
+                        className="w-full justify-start text-xs h-8 px-2"
+                        size="sm"
                       >
-                        <Icon className="mr-2 h-4 w-4" />
-                        {item.label}
-                        <Badge variant="secondary" className="ml-auto">
+                        <Icon className="mr-1.5 h-3.5 w-3.5 flex-shrink-0" />
+                        <span className="truncate">{item.label}</span>
+                        <Badge variant="secondary" className="ml-auto text-[10px] h-5 px-1.5">
                           {item.count}
                         </Badge>
                       </Button>
@@ -436,18 +543,16 @@ export default function AdminDashboard() {
                 </CardContent>
               </Card>
 
-              {/* Main Content */}
-              <div className="md:col-span-3">
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="capitalize">{activeManageSection} Management</CardTitle>
-                    <CardDescription>Manage your {activeManageSection}</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    {renderManageSection()}
-                  </CardContent>
-                </Card>
-              </div>
+              {/* Main Content - Expands to fill remaining space */}
+              <Card className="flex-1 min-w-0">
+                <CardHeader>
+                  <CardTitle className="capitalize">{activeManageSection} Management</CardTitle>
+                  <CardDescription>Manage your {activeManageSection}</CardDescription>
+                </CardHeader>
+                <CardContent className="overflow-x-auto">
+                  {renderManageSection()}
+                </CardContent>
+              </Card>
             </div>
           </TabsContent>
         </Tabs>
@@ -458,16 +563,16 @@ export default function AdminDashboard() {
 
 const ChartCard = ({ title, loading, children }: { title: string; loading?: boolean; children: React.ReactElement }) => (
   <Card>
-    <CardHeader>
-      <CardTitle>{title}</CardTitle>
+    <CardHeader className="pb-2">
+      <CardTitle className="text-sm font-medium">{title}</CardTitle>
     </CardHeader>
-    <CardContent>
+    <CardContent className="pt-0">
       {loading ? (
-        <div className="flex items-center justify-center h-[300px]">
+        <div className="flex items-center justify-center h-[240px]">
           <Skeleton className="h-full w-full" />
         </div>
       ) : (
-        <ResponsiveContainer width="100%" height={300}>
+        <ResponsiveContainer width="100%" height={240}>
           {children}
         </ResponsiveContainer>
       )}

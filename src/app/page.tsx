@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { ChevronDown, ChevronUp } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 import CheckatradeWidget from '@/components/CheckatradeWidget'
 
 interface Service {
@@ -15,6 +16,7 @@ interface Service {
 }
 
 export default function Home() {
+  const t = useTranslations('home')
   const [services, setServices] = useState<Service[]>([])
 
   useEffect(() => {
@@ -82,7 +84,7 @@ export default function Home() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2, duration: 0.8 }}
             >
-              Crowlee Art
+              {t('title')}
             </motion.h1>
 
             <motion.p
@@ -91,7 +93,7 @@ export default function Home() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4, duration: 0.8 }}
             >
-              The Art Of Maintenance
+              {t('tagline')}
             </motion.p>
 
             <motion.p
@@ -100,7 +102,7 @@ export default function Home() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.6, duration: 0.8 }}
             >
-              Expert maintenance for homes and small businesses across London and Hertfordshire.
+              {t('heroDescription')}
             </motion.p>
           </motion.div>
 
@@ -112,13 +114,13 @@ export default function Home() {
             transition={{ delay: 0.8, duration: 0.8 }}
           >
             {[
-              { icon: "⭐", title: "Expert Team", desc: "Skilled Professionals", gradientClass: "group-hover:from-purple-400/50 group-hover:to-purple-400/0", hoverClass: "group-hover:text-purple-300", bgClass: "from-purple-600/10 to-purple-600/5" },
-              { icon: "📍", title: "Local Service", desc: "London & Herts", gradientClass: "group-hover:from-blue-400/50 group-hover:to-blue-400/0", hoverClass: "group-hover:text-blue-300", bgClass: "from-blue-600/10 to-blue-600/5" },
-              { icon: "💷", title: "Fair Pricing", desc: "Transparent Costs", gradientClass: "group-hover:from-green-400/50 group-hover:to-green-400/0", hoverClass: "group-hover:text-green-300", bgClass: "from-green-600/10 to-green-600/5" },
-              { icon: "✅", title: "Quality Guarantee", desc: "Satisfaction Assured", gradientClass: "group-hover:from-orange-400/50 group-hover:to-orange-400/0", hoverClass: "group-hover:text-orange-300", bgClass: "from-orange-600/10 to-orange-600/5" },
+              { icon: "⭐", key: "expertTeam", gradientClass: "group-hover:from-purple-400/50 group-hover:to-purple-400/0", hoverClass: "group-hover:text-purple-300", bgClass: "from-purple-600/10 to-purple-600/5" },
+              { icon: "📍", key: "localService", gradientClass: "group-hover:from-blue-400/50 group-hover:to-blue-400/0", hoverClass: "group-hover:text-blue-300", bgClass: "from-blue-600/10 to-blue-600/5" },
+              { icon: "💷", key: "fairPricing", gradientClass: "group-hover:from-green-400/50 group-hover:to-green-400/0", hoverClass: "group-hover:text-green-300", bgClass: "from-green-600/10 to-green-600/5" },
+              { icon: "✅", key: "quality", gradientClass: "group-hover:from-orange-400/50 group-hover:to-orange-400/0", hoverClass: "group-hover:text-orange-300", bgClass: "from-orange-600/10 to-orange-600/5" },
             ].map((benefit, index) => (
               <motion.div
-                key={benefit.title}
+                key={benefit.key}
                 className="group flex flex-col items-center text-center p-6 rounded-xl bg-gradient-to-br from-white/5 to-white/0 border border-white/10 hover:border-white/20 transition-all duration-300 cursor-default"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -129,9 +131,9 @@ export default function Home() {
                   {benefit.icon}
                 </div>
                 <h3 className={`text-lg font-bold text-white mb-2 ${benefit.hoverClass} transition-colors`}>
-                  {benefit.title}
+                  {t(`benefits.${benefit.key}.title`)}
                 </h3>
-                <p className="text-sm text-gray-400">{benefit.desc}</p>
+                <p className="text-sm text-gray-400">{t(`benefits.${benefit.key}.desc`)}</p>
               </motion.div>
             ))}
           </motion.div>

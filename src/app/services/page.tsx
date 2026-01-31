@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { usePathname } from 'next/navigation'
+import { useTranslations } from 'next-intl'
 
 interface Service {
   id: number
@@ -13,6 +14,7 @@ interface Service {
 }
 
 export default function ServicesPage() {
+  const t = useTranslations('services')
   const [services, setServices] = useState<Service[]>([])
   const [loading, setLoading] = useState(true)
   const pathname = usePathname()
@@ -57,11 +59,10 @@ export default function ServicesPage() {
     >
       <motion.div className="text-center space-y-6" variants={fadeIn} custom={1}>
         <h1 className="text-4xl md:text-6xl font-bold text-purple-400 drop-shadow-lg">
-          Our Services
+          {t('title')}
         </h1>
         <p className="text-lg md:text-xl max-w-4xl mx-auto text-white/80">
-          At Crowlee Art, we believe true craftsmanship starts with care and ends with excellence.
-          Whether it's a minor repair or a major installation, we bring dedication, detail and expertise to every job.
+          {t('description')}
         </p>
       </motion.div>
 
@@ -71,7 +72,7 @@ export default function ServicesPage() {
         custom={2}
       >
         {loading ? (
-          <p className="text-center col-span-full text-white/70">Loading services...</p>
+          <p className="text-center col-span-full text-white/70">{t('loading')}</p>
         ) : services.length > 0 ? (
           services.map((service, index) => (
             <motion.div
@@ -107,17 +108,17 @@ export default function ServicesPage() {
           ))
         ) : (
           <p className="text-center col-span-full text-white/70">
-            No services available at the moment.
+            {t('noServices')}
           </p>
         )}
       </motion.div>
 
       <motion.div className="text-center pt-16" variants={fadeIn} custom={3}>
         <h3 className="text-2xl md:text-3xl font-semibold text-white mb-4">
-          We're not just a service, we're your trusted partner.
+          {t('finalTitle')}
         </h3>
         <p className="max-w-2xl mx-auto text-white/70">
-          Let us take care of what matters most. Contact us today and enjoy the peace of mind of working with true professionals.
+          {t('finalText')}
         </p>
       </motion.div>
     </motion.section>

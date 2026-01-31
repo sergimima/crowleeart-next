@@ -3,7 +3,8 @@
 import { useState, useEffect, FormEvent } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
-import { toast } from 'react-toastify'
+import { toast } from 'sonner'
+import { useTranslations } from 'next-intl'
 import { Upload, X } from 'lucide-react'
 import Image from 'next/image'
 import ClientLayout from '@/components/ClientLayout'
@@ -23,6 +24,7 @@ interface BookingForm {
 
 export default function BookingPage() {
   const router = useRouter()
+  const t = useTranslations('booking')
   const [services, setServices] = useState<Service[]>([])
   const [formData, setFormData] = useState<BookingForm>({
     phone: '',
@@ -50,12 +52,12 @@ export default function BookingPage() {
     const file = e.target.files?.[0]
     if (file) {
       if (file.size > 5 * 1024 * 1024) {
-        toast.error('Image must be less than 5MB')
+        toast.error(t('alertImageSize'))
         return
       }
 
       if (!file.type.startsWith('image/')) {
-        toast.error('File must be an image')
+        toast.error(t('alertImageType'))
         return
       }
 
@@ -75,7 +77,7 @@ export default function BookingPage() {
 
   const validateForm = () => {
     if (!formData.serviceId || !formData.date || !formData.description || !formData.phone) {
-      toast.error('Please fill in all required fields.')
+      toast.error(t('alertRequired'))
       return false
     }
 
@@ -84,12 +86,12 @@ export default function BookingPage() {
     today.setHours(0, 0, 0, 0)
 
     if (selectedDate < today) {
-      toast.error('Please select a future date for the booking.')
+      toast.error(t('alertFutureDate'))
       return false
     }
 
     if (formData.description.length < 10) {
-      toast.error('Description should be at least 10 characters.')
+      toast.error(t('alertDescriptionLength'))
       return false
     }
 
@@ -120,7 +122,7 @@ export default function BookingPage() {
           const uploadData = await uploadResponse.json()
           imageUrl = uploadData.url
         } else {
-          toast.error('Failed to upload image')
+          toast.error(t('alertUploadFailed'))
           setLoading(false)
           return
         }
@@ -140,7 +142,7 @@ export default function BookingPage() {
       })
 
       if (response.ok) {
-        toast.success('Booking created successfully! Redirecting to dashboard...')
+        toast.success(t('alertSuccess'))
         setFormData({ phone: '', serviceId: '', date: '', description: '' })
         setImageFile(null)
         setImagePreview(null)
@@ -151,11 +153,11 @@ export default function BookingPage() {
         }, 1500)
       } else {
         const error = await response.json()
-        toast.error(error.error || 'Error creating booking.')
+        toast.error(error.error || t('alertError'))
       }
     } catch (error) {
       console.error(error)
-      toast.error('Error creating booking.')
+      toast.error(t('alertError'))
     } finally {
       setLoading(false)
     }
@@ -170,11 +172,11 @@ export default function BookingPage() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
       >
-        <h1 className="text-4xl font-bold text-purple-400 mb-10 text-center">Book a Service</h1>
+        <h1 className="text-4xl font-bold text-purple-400 mb-10 text-center">{t('title')}</h1>
 
       <form onSubmit={handleSubmit} className="bg-white/10 p-8 rounded-lg border border-white/20 space-y-6">
         <div>
-          <label className="block text-white mb-2">Phone</label>
+          <label className="block text-white mb-2">{t('phone')}</label>
           <input
             type="tel"
             name="phone"
@@ -186,7 +188,7 @@ export default function BookingPage() {
         </div>
 
         <div>
-          <label className="block text-white mb-2">Service</label>
+          <label className="block text-white mb-2">{t('service')}</label>
           <select
             name="serviceId"
             value={formData.serviceId}
@@ -194,7 +196,7 @@ export default function BookingPage() {
             className={`${inputStyle} cursor-pointer`}
             required
           >
-            <option value="">Select a service</option>
+            <option value="">{t('selectService')}</option>
             {services.map(service => (
               <option key={service.id} value={service.id} className="bg-gray-800">
                 {service.title} - £{service.price}
@@ -204,7 +206,7 @@ export default function BookingPage() {
         </div>
 
         <div>
-          <label className="block text-white mb-2">Preferred Date</label>
+          <label className="block text-white mb-2">{t('date')}</label>
           <input
             type="date"
             name="date"
@@ -216,31 +218,31 @@ export default function BookingPage() {
         </div>
 
         <div>
-          <label className="block text-white mb-2">Description *</label>
+          <label className="block text-white mb-2">{t('description')} *</label>
           <textarea
             name="description"
             value={formData.description}
             onChange={handleChange}
             rows={5}
             className={`${inputStyle} resize-none`}
-            placeholder="Describe your needs... (minimum 10 characters)"
+            placeholder={t('descriptionPlaceholder')}
             required
             minLength={10}
           />
         </div>
 
         <div>
-          <label className="block text-white mb-2">Reference Image (Optional)</label>
-          <p className="text-sm text-white/60 mb-3">Upload a photo if you need to show something specific (max 5MB)</p>
+          <label className="block text-white mb-2">{t('refImageLabel')}</label>
+          <p className="text-sm text-white/60 mb-3">{t('refImageHint')}</p>
 
           {!imagePreview ? (
             <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-white/20 border-dashed rounded-lg cursor-pointer bg-white/5 hover:bg-white/10 transition">
               <div className="flex flex-col items-center justify-center pt-5 pb-6">
                 <Upload className="w-10 h-10 mb-3 text-white/60" />
                 <p className="text-sm text-white/60">
-                  <span className="font-semibold">Click to upload</span> or drag and drop
+                  <span className="font-semibold">{t('uploadHint')}</span>
                 </p>
-                <p className="text-xs text-white/40 mt-1">PNG, JPG, WEBP up to 5MB</p>
+                <p className="text-xs text-white/40 mt-1">{t('uploadFormat')}</p>
               </div>
               <input
                 type="file"
@@ -273,13 +275,13 @@ export default function BookingPage() {
           disabled={loading}
           className="w-full bg-purple-600 hover:bg-purple-700 disabled:bg-gray-600 text-white font-bold py-3 rounded transition cursor-pointer disabled:cursor-not-allowed"
         >
-          {loading ? 'Booking...' : 'Book Now'}
+          {loading ? t('loading') : t('submit')}
         </button>
       </form>
 
       <div className="mt-8 text-center text-white/70 text-sm">
-        <p>Note: You need to be logged in to create a booking.</p>
-        <p className="mt-2">Don't have an account? <a href="/login" className="text-purple-400 hover:underline">Sign up here</a></p>
+        <p>{t('noteLogin')}</p>
+        <p className="mt-2">{t('noAccount')} <a href="/login" className="text-purple-400 hover:underline">{t('signUpLink')}</a></p>
       </div>
       </motion.div>
     </ClientLayout>
