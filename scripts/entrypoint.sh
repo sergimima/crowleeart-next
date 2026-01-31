@@ -5,7 +5,7 @@ echo "🚀 Starting Crowlee Art Application..."
 
 # Wait for database to be ready
 echo "⏳ Waiting for database..."
-until echo "SELECT 1" | npx prisma db execute --stdin > /dev/null 2>&1; do
+until echo "SELECT 1" | npx prisma db execute --stdin --schema ./prisma/schema.prisma > /dev/null 2>&1; do
   echo "Database is unavailable - sleeping"
   sleep 2
 done
