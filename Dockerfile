@@ -43,11 +43,8 @@ COPY --from=builder /app/public ./public
 COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
 COPY --from=builder /app/prisma ./prisma
-COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
-COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
-COPY --from=builder /app/node_modules/prisma ./node_modules/prisma
-COPY --from=builder /app/node_modules/effect ./node_modules/effect
-COPY --from=builder /app/node_modules/.bin ./node_modules/.bin
+# Copiar node_modules completo para Prisma CLI (necesario para migrations en entrypoint)
+COPY --from=builder /app/node_modules ./node_modules
 
 # Copiar entrypoint script y dar permisos
 COPY scripts/entrypoint.sh ./entrypoint.sh
