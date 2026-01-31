@@ -17,7 +17,7 @@ interface User {
   id: number
   name: string
   email: string
-  role: 'admin' | 'client'
+  role: 'admin' | 'client' | 'worker'
   phone?: string
   address?: string
   createdAt?: string
@@ -200,7 +200,7 @@ export default function AdminUsers({ users: initialUsers, onUpdate }: AdminUsers
                     </div>
                   </TableCell>
                   <TableCell>
-                    <Badge variant={user.role === 'admin' ? 'default' : 'secondary'}>
+                    <Badge variant={user.role === 'admin' ? 'default' : user.role === 'worker' ? 'outline' : 'secondary'}>
                       <Shield className="h-3 w-3 mr-1" />
                       {user.role}
                     </Badge>
@@ -278,13 +278,14 @@ export default function AdminUsers({ users: initialUsers, onUpdate }: AdminUsers
                   <Label htmlFor="edit-role">Role</Label>
                   <Select
                     value={editingUser.role}
-                    onValueChange={(value: 'admin' | 'client') => setEditingUser({ ...editingUser, role: value })}
+                    onValueChange={(value: 'admin' | 'client' | 'worker') => setEditingUser({ ...editingUser, role: value })}
                   >
                     <SelectTrigger id="edit-role">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="client">Client</SelectItem>
+                      <SelectItem value="worker">Worker</SelectItem>
                       <SelectItem value="admin">Admin</SelectItem>
                     </SelectContent>
                   </Select>
