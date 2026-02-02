@@ -97,9 +97,9 @@ export async function POST(req: NextRequest) {
       }
     })
 
-    // Build the invitation URL
+    // Build the invitation URL (login page validates invite and user can register from there)
     const baseUrl = process.env.NEXTAUTH_URL || 'http://localhost:3000'
-    const inviteUrl = `${baseUrl}/register?invite=${inviteToken}`
+    const inviteUrl = `${baseUrl}/login?invite=${inviteToken}`
 
     return NextResponse.json({
       success: true,

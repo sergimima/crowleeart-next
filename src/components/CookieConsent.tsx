@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import { useTranslations } from 'next-intl'
 import { Button } from '@/components/ui/button'
 import { Cookie } from 'lucide-react'
 
@@ -17,6 +18,7 @@ export function getStoredConsent(): CookiePreference | null {
 }
 
 export default function CookieConsent() {
+  const t = useTranslations('cookies')
   const [visible, setVisible] = useState(false)
 
   useEffect(() => {
@@ -34,7 +36,7 @@ export default function CookieConsent() {
   return (
     <div
       role="dialog"
-      aria-label="Cookie consent"
+      aria-label={t('ariaLabel')}
       className="fixed bottom-0 left-0 right-0 z-[100] p-4 md:p-5 shadow-lg border-t border-white/10 bg-[#0f1729]/95 backdrop-blur supports-[backdrop-filter]:bg-[#0f1729]/90"
     >
       <div className="mx-auto max-w-4xl flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
@@ -44,16 +46,16 @@ export default function CookieConsent() {
           </div>
           <div>
             <p className="text-sm font-medium text-white">
-              Utilizamos cookies
+              {t('title')}
             </p>
             <p className="text-sm text-white/80 mt-0.5">
-              Usamos cookies propias y de terceros para el funcionamiento del sitio, analíticas y preferencias. Puedes aceptar todas, solo las necesarias o ver más en nuestra política de cookies.
+              {t('description')}
             </p>
             <Link
               href="/privacy#cookies"
               className="text-sm text-purple-400 hover:text-purple-300 underline underline-offset-2 mt-1 inline-block"
             >
-              Política de cookies
+              {t('policyLink')}
             </Link>
           </div>
         </div>
@@ -64,14 +66,14 @@ export default function CookieConsent() {
             className="border-white/20 text-white hover:bg-white/10"
             onClick={() => save('necessary')}
           >
-            Solo necesarias
+            {t('necessaryOnly')}
           </Button>
           <Button
             size="sm"
             className="bg-purple-600 hover:bg-purple-500 text-white"
             onClick={() => save('all')}
           >
-            Aceptar todas
+            {t('acceptAll')}
           </Button>
         </div>
       </div>

@@ -150,8 +150,8 @@ export default function ContactPage() {
 
       <div className="mt-10 text-center text-white/70">
         <p>{t('reachUs')}</p>
-        <p className="mt-2">Email: info@crowleeart.com</p>
-        <p>Phone: +44 7123 456 789</p>
+        <p className="mt-2">Email: Crowleeart@gmail.com</p>
+        <p>Phone: 07732455178</p>
       </div>
     </motion.section>
   )

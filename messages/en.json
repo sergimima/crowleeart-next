@@ -152,6 +152,14 @@
     "copyright": "Crowlee Art — The Art Of Maintenance — All rights reserved.",
     "privacy": "Privacy and cookie policy"
   },
+  "cookies": {
+    "title": "We use cookies",
+    "description": "We use our own and third-party cookies for site functionality, analytics and preferences. You can accept all, only necessary, or read more in our cookie policy.",
+    "policyLink": "Cookie policy",
+    "necessaryOnly": "Necessary only",
+    "acceptAll": "Accept all",
+    "ariaLabel": "Cookie consent"
+  },
   "notFound": {
     "title": "404",
     "subtitle": "Page not found",
