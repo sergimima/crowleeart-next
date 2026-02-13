@@ -5,6 +5,7 @@ import { motion } from 'framer-motion'
 import { usePathname } from 'next/navigation'
 import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
+import SimplyBusinessBadge from '@/components/SimplyBusinessBadge'
 
 interface ContactForm {
   name: string
@@ -152,6 +153,11 @@ export default function ContactPage() {
         <p>{t('reachUs')}</p>
         <p className="mt-2">Email: Crowleeart@gmail.com</p>
         <p>Phone: 07732455178</p>
+      </div>
+
+      {/* Insurance Badge */}
+      <div className="mt-10">
+        <SimplyBusinessBadge />
       </div>
     </motion.section>
   )

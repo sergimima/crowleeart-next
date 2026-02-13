@@ -12,7 +12,9 @@
       "Bash(docker-compose:*)",
       "Bash(node:*)",
       "Bash(powershell -Command:*)",
-      "Bash(npm uninstall:*)"
+      "Bash(npm uninstall:*)",
+      "Bash(find:*)",
+      "Bash(npx next build:*)"
     ],
     "deny": [],
     "ask": []

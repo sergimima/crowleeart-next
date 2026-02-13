@@ -4,9 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-CrowleeART is a professional services booking platform built with Next.js 15.5, migrated from a previous implementation. The platform provides booking services, user management, gallery, and admin dashboard functionality for a tattoo/piercing/maintenance business.
-
-**Current Migration Status:** Phase 0-1 completed (18% overall progress)
+CrowleeART is a professional services booking platform built with Next.js 15.5. The platform provides booking services, user management, gallery, worker time tracking, and admin dashboard functionality for a tattoo/piercing/maintenance business.
 
 ## Essential Commands
 
@@ -40,7 +38,7 @@ docker-compose -f docker-compose.prod.yml logs -f  # View logs
 - **Next.js 15.5** with React 19, App Router, and Turbopack
 - **TypeScript** with strict mode enabled
 - **Prisma ORM** with PostgreSQL database
-- **JWT Authentication** (custom implementation, not NextAuth yet)
+- **JWT Authentication** (custom implementation with role-based access)
 - **TailwindCSS 4.0** for styling with Radix UI components
 - **Zod** for schema validation
 - **React Hook Form** for form handling
@@ -136,7 +134,7 @@ The Prisma schema includes 12 models:
 
 ### Authentication System
 
-**Current Implementation:** Custom JWT-based auth (not NextAuth v5 yet)
+**Implementation:** Custom JWT-based auth with role-based access control
 
 - **Login Flow:** POST `/api/auth/login` → JWT token in HTTP-only cookie
 - **Token Validation:** Middleware checks JWT for protected routes (`/dashboard/*`, `/profile/*`)
@@ -199,8 +197,6 @@ Required in `.env.local`:
 ```bash
 DATABASE_URL="postgresql://user:password@localhost:5432/crowleeart"
 JWT_SECRET="your-secret-key-change-in-production"
-NEXTAUTH_URL="http://localhost:3000"  # For future NextAuth implementation
-NEXTAUTH_SECRET="your-nextauth-secret"  # For future NextAuth implementation
 ```
 
 ### Docker Deployment
@@ -223,16 +219,6 @@ TypeScript paths configured in [tsconfig.json](tsconfig.json):
 import { Component } from '@/components/Component'  // src/components/Component
 import { prisma } from '@/lib/db'                   // src/lib/db
 ```
-
-## Migration Notes
-
-This is a migrated project. Reference documentation:
-- Original project review: `../CrowleeART/review.md`
-- Migration plan: `../CrowleeART/MIGRATION_PLAN.md`
-- Migration status: `../CrowleeART/MIGRATION_STATUS.md`
-
-**Completed:** Phases 0-1 (Setup)
-**Pending:** NextAuth v5 implementation, landing pages, full admin dashboard, booking system
 
 ## Key Configuration Files
 

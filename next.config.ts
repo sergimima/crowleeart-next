@@ -18,6 +18,10 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: 'crowleeart.co.uk',
       },
+      {
+        protocol: 'https',
+        hostname: 'quote.simplybusiness.co.uk',
+      },
     ],
     unoptimized: false,
   },
