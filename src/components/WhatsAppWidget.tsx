@@ -1,26 +1,22 @@
 'use client'
 
-import { useEffect } from 'react'
+const PHONE = '447732455178'
+const MESSAGE = 'Hello! I would like to inquire about your services.'
 
 export default function WhatsAppWidget() {
-  useEffect(() => {
-    // Create script element
-    const script = document.createElement('script')
-    script.src = 'https://wsp.lixsa.ai/whatsapp-widget.js'
-    script.setAttribute('phone', '447732455178')
-    script.setAttribute('message', 'Hello! I would like to inquire about your services.')
-    script.async = true
+  const url = `https://wa.me/${PHONE}?text=${encodeURIComponent(MESSAGE)}`
 
-    // Append script to body
-    document.body.appendChild(script)
-
-    // Cleanup function to remove script when component unmounts
-    return () => {
-      if (document.body.contains(script)) {
-        document.body.removeChild(script)
-      }
-    }
-  }, [])
-
-  return null // This component doesn't render anything visible
+  return (
+    <a
+      href={url}
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label="Chat on WhatsApp"
+      className="fixed bottom-6 right-6 z-[99999] flex h-14 w-14 items-center justify-center rounded-full bg-[#25D366] shadow-lg transition-transform hover:scale-110 active:scale-95"
+    >
+      <svg viewBox="0 0 32 32" className="h-8 w-8 fill-white">
+        <path d="M16.004 0C7.165 0 .002 7.159.002 15.995c0 2.82.737 5.573 2.14 7.997L.012 32l8.236-2.102a16.05 16.05 0 0 0 7.756 1.977C24.843 31.875 32 24.72 32 15.995 32 7.159 24.843 0 16.004 0zm0 29.314a13.46 13.46 0 0 1-7.09-2.008l-.51-.302-5.272 1.346 1.407-5.134-.332-.527A13.38 13.38 0 0 1 2.56 15.995c0-7.412 6.035-13.44 13.444-13.44 7.412 0 13.44 6.028 13.44 13.44 0 7.416-6.028 13.44-13.44 13.44v-.12zm7.382-10.065c-.406-.203-2.4-1.183-2.772-1.318-.372-.136-.643-.203-914.203-.914-.406-.271-.643-.406-.643.406s-.745.914-.914 1.1c-.17.186-.338.203-.744 0-.406-.203-1.715-.632-3.266-2.016-1.208-1.076-2.024-2.405-2.261-2.811-.237-.406-.025-.626.178-.828.183-.183.406-.474.61-.711.202-.237.27-.406.405-.677.135-.27.067-.508-.034-.711-.102-.203-.914-2.203-1.253-3.015-.33-.793-.665-.686-.914-.699l-.779-.013c-.27 0-.711.102-1.082.508-.372.406-1.42 1.387-1.42 3.387 0 1.997 1.455 3.926 1.658 4.197.203.27 2.862 4.37 6.936 6.127.97.418 1.726.668 2.316.855.973.31 1.858.266 2.558.16.78-.116 2.4-.98 2.739-1.929.338-.948.338-1.76.237-1.929-.102-.169-.372-.27-.779-.474z" />
+      </svg>
+    </a>
+  )
 }
