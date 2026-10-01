@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { usePathname } from 'next/navigation'
 import { useTranslations } from 'next-intl'
+import Link from 'next/link'
 
 interface Service {
   id: number
@@ -65,6 +66,16 @@ export default function ServicesPage() {
           {t('description')}
         </p>
       </motion.div>
+
+      <motion.p className="mt-8 max-w-4xl mx-auto text-center text-sm text-white/70" variants={fadeIn} custom={1}>
+        {t.rich('bookingTerms', {
+          link: chunks => (
+            <Link href="/terms" className="text-purple-300 hover:text-purple-200 underline underline-offset-2">
+              {chunks}
+            </Link>
+          ),
+        })}
+      </motion.p>
 
       <motion.div
         className="grid md:grid-cols-2 lg:grid-cols-3 gap-10 mt-12"

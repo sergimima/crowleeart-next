@@ -53,6 +53,7 @@
     "description": "En Crowlee Art, creemos que la verdadera artesanía comienza con el cuidado y termina con la excelencia. Ya sea una reparación menor o una instalación mayor, aportamos dedicación, detalle y experiencia en cada trabajo. Esto es lo que ofrecemos con orgullo:",
     "loading": "Cargando servicios...",
     "noServices": "No hay servicios disponibles en este momento.",
+    "bookingTerms": "Las reservas requieren un pago de £80 que se descuenta de la mano de obra y una confirmación por escrito. Cancelar o modificar con menos de 48 horas de antelación puede suponer la retención de hasta £80, limitada a pérdidas directas razonables y sin perjuicio de tus derechos legales. <link>Lee nuestros Términos y Condiciones</link>.",
     "doorTitle": "Instalación de puertas",
     "doorText": "Ajustes a medida, corte de bisagras, instalación de cerraduras y adaptación a la estructura de tu hogar.",
     "repairsTitle": "Reparaciones generales",
@@ -101,7 +102,7 @@
     "date": "Fecha preferida",
     "description": "Descripción",
     "descriptionPlaceholder": "Describe tus necesidades... (mínimo 10 caracteres)",
-    "submit": "Reservar",
+    "submit": "Enviar solicitud de reserva",
     "loading": "Reservando...",
     "refImageLabel": "Imagen de referencia (opcional)",
     "refImageHint": "Sube una foto si necesitas mostrar algo concreto (máx. 5MB)",
@@ -116,8 +117,13 @@
     "alertImageSize": "La imagen debe ser menor de 5MB",
     "alertImageType": "El archivo debe ser una imagen",
     "alertUploadFailed": "Error al subir la imagen",
-    "alertSuccess": "¡Reserva creada! Redirigiendo al panel...",
+    "alertSuccess": "Solicitud recibida. Tu cita solo queda confirmada cuando acordemos la disponibilidad, recibamos el pago de reserva de £80 y te enviemos la confirmación.",
     "alertError": "Error al crear la reserva.",
+    "alertTerms": "Acepta los Términos y Condiciones antes de enviar.",
+    "termsPayment": "Pago de reserva de £80, que se descuenta de la mano de obra. Tu cita queda confirmada cuando acordemos la disponibilidad, recibamos el pago y te enviemos confirmación por escrito. Los materiales se cobran aparte salvo acuerdo.",
+    "termsCancellation": "Cancelar o modificar con menos de 48 horas de antelación puede suponer la retención de hasta £80, limitada a nuestras pérdidas directas razonables. Se aplican tus derechos legales de desistimiento.",
+    "termsAccept": "Acepto los <link>Términos y Condiciones de Crowlee ART (se abren en otra pestaña)</link>, incluido el pago de reserva y la política de cancelación de 48 horas.",
+    "earlyStart": "Si el trabajo empieza dentro de mi periodo de desistimiento de 14 días, solicito expresamente que empiece antes. Entiendo que, si cancelo, puedo tener que pagar la parte proporcional del trabajo realizado, y que pierdo mi derecho legal de desistimiento una vez el servicio esté completamente realizado. Déjalo sin marcar si no solicitas empezar antes.",
     "services": { "general": "Mantenimiento general", "plumbing": "Fontanería", "painting": "Pintura y decoración", "flooring": "Suelos laminados", "washing": "Limpieza a presión" }
   },
   "login": {
@@ -150,7 +156,8 @@
   },
   "footer": {
     "copyright": "Crowlee Art — The Art Of Maintenance — Todos los derechos reservados.",
-    "privacy": "Política de privacidad y cookies"
+    "privacy": "Política de privacidad y cookies",
+    "terms": "Términos y Condiciones"
   },
   "cookies": {
     "title": "Utilizamos cookies",

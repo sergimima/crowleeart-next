@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/db'
 import jwt from 'jsonwebtoken'
+import { TERMS_VERSION } from '@/lib/terms'
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-production'
 
@@ -46,7 +47,7 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   try {
-    const { serviceId, date, description, phone, imageUrl } = await req.json()
+    const { serviceId, date, description, phone, imageUrl, termsAccepted, termsVersion, earlyStartRequested } = await req.json()
 
     // Get authenticated user from token
     const token = req.cookies.get('token')?.value
@@ -71,6 +72,20 @@ export async function POST(req: NextRequest) {
     if (!serviceId || !date || !description || !phone) {
       return NextResponse.json(
         { error: 'All fields are required: serviceId, date, description, phone' },
+        { status: 400 }
+      )
+    }
+
+    if (termsAccepted !== true || termsVersion !== TERMS_VERSION) {
+      return NextResponse.json(
+        { error: 'Please read and accept the current Terms & Conditions.' },
+        { status: 400 }
+      )
+    }
+
+    if (earlyStartRequested !== undefined && typeof earlyStartRequested !== 'boolean') {
+      return NextResponse.json(
+        { error: 'Invalid early-start request.' },
         { status: 400 }
       )
     }
@@ -102,6 +117,9 @@ export async function POST(req: NextRequest) {
         description,
         phone,
         imageUrl: imageUrl || null,
+        termsVersion,
+        termsAcceptedAt: new Date(),
+        earlyStartRequested: earlyStartRequested === true,
         status: 'pending',
       },
       include: {
@@ -111,7 +129,7 @@ export async function POST(req: NextRequest) {
     })
 
     return NextResponse.json({
-      message: 'Booking created successfully!',
+      message: 'Booking request received. Confirmation requires agreed availability and receipt of the £80 booking payment.',
       booking
     })
   } catch (error) {

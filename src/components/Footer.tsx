@@ -12,6 +12,10 @@ export default async function Footer() {
         <Link href="/privacy" className="text-purple-300 hover:text-purple-200 underline underline-offset-2">
           {t('privacy')}
         </Link>
+        <span className="mx-2 opacity-60">·</span>
+        <Link href="/terms" className="text-purple-300 hover:text-purple-200 underline underline-offset-2">
+          {t('terms')}
+        </Link>
       </p>
     </footer>
   )

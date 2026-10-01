@@ -60,6 +60,9 @@ model Booking {
   description String   @db.Text
   phone       String
   imageUrl    String?  // Optional image URL for reference photos
+  termsVersion        String?   // Terms & Conditions version accepted (null for bookings made before terms existed)
+  termsAcceptedAt     DateTime? // Server timestamp of terms acceptance
+  earlyStartRequested Boolean   @default(false) // Express request to start within the 14-day cooling-off period
   status      String   @default("pending") // "pending", "confirmed", "in_progress", "completed", "cancelled"
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt

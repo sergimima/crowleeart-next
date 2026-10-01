@@ -8,6 +8,7 @@ import { useTranslations } from 'next-intl'
 import { Upload, X } from 'lucide-react'
 import Image from 'next/image'
 import ClientLayout from '@/components/ClientLayout'
+import { TERMS_VERSION } from '@/lib/terms'
 
 interface Service {
   id: number
@@ -32,6 +33,8 @@ export default function BookingPage() {
     date: '',
     description: '',
   })
+  const [termsAccepted, setTermsAccepted] = useState(false)
+  const [earlyStartRequested, setEarlyStartRequested] = useState(false)
   const [loading, setLoading] = useState(false)
   const [imageFile, setImageFile] = useState<File | null>(null)
   const [imagePreview, setImagePreview] = useState<string | null>(null)
@@ -95,6 +98,11 @@ export default function BookingPage() {
       return false
     }
 
+    if (!termsAccepted) {
+      toast.error(t('alertTerms'))
+      return false
+    }
+
     return true
   }
 
@@ -138,6 +146,9 @@ export default function BookingPage() {
           description: formData.description,
           phone: formData.phone,
           imageUrl: imageUrl,
+          termsAccepted,
+          termsVersion: TERMS_VERSION,
+          earlyStartRequested,
         })
       })
 
@@ -146,6 +157,8 @@ export default function BookingPage() {
         setFormData({ phone: '', serviceId: '', date: '', description: '' })
         setImageFile(null)
         setImagePreview(null)
+        setTermsAccepted(false)
+        setEarlyStartRequested(false)
 
         // Redirect to dashboard after 1.5 seconds
         setTimeout(() => {
@@ -268,6 +281,38 @@ export default function BookingPage() {
               </button>
             </div>
           )}
+        </div>
+
+        <div className="rounded-lg border border-white/20 bg-white/5 p-4 space-y-4 text-sm">
+          <p className="text-white/80">{t('termsPayment')}</p>
+          <p className="text-white/80">{t('termsCancellation')}</p>
+          <label className="flex items-start gap-3 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={termsAccepted}
+              onChange={e => setTermsAccepted(e.target.checked)}
+              className="mt-1 h-4 w-4 accent-purple-500"
+              required
+            />
+            <span>
+              {t.rich('termsAccept', {
+                link: chunks => (
+                  <a href="/terms" target="_blank" rel="noopener noreferrer" className="text-purple-300 underline underline-offset-2">
+                    {chunks}
+                  </a>
+                ),
+              })}
+            </span>
+          </label>
+          <label className="flex items-start gap-3 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={earlyStartRequested}
+              onChange={e => setEarlyStartRequested(e.target.checked)}
+              className="mt-1 h-4 w-4 accent-purple-500"
+            />
+            <span className="text-white/80">{t('earlyStart')}</span>
+          </label>
         </div>
 
         <button

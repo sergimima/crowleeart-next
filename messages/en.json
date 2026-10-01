@@ -53,6 +53,7 @@
     "description": "At Crowlee Art, we believe that true craftsmanship begins with care and ends with excellence. Whether it's a minor repair or a major installation, we bring dedication, detail, and deep expertise to every job. Here's what we proudly offer:",
     "loading": "Loading services...",
     "noServices": "No services available at the moment.",
+    "bookingTerms": "Bookings require an £80 payment credited towards labour and written confirmation. Cancellation or changes with less than 48 hours’ notice may result in retention of up to £80, limited to reasonable direct losses and subject to statutory rights. <link>Read our Terms & Conditions</link>.",
     "doorTitle": "Door Installation",
     "doorText": "Precise custom fitting, hinge cutting, lock fitting, and adjustments to match the unique structure of your home.",
     "repairsTitle": "General Repairs",
@@ -101,7 +102,7 @@
     "date": "Preferred Date",
     "description": "Description",
     "descriptionPlaceholder": "Describe your service needs... (minimum 10 characters)",
-    "submit": "Book Now",
+    "submit": "Submit booking request",
     "loading": "Booking...",
     "refImageLabel": "Reference Image (Optional)",
     "refImageHint": "Upload a photo if you need to show something specific (max 5MB)",
@@ -116,8 +117,13 @@
     "alertImageSize": "Image must be less than 5MB",
     "alertImageType": "File must be an image",
     "alertUploadFailed": "Failed to upload image",
-    "alertSuccess": "Booking created successfully! Redirecting to dashboard...",
+    "alertSuccess": "Request received. Your appointment is confirmed only after availability is agreed, the £80 booking payment is received and we send confirmation.",
     "alertError": "Error creating booking.",
+    "alertTerms": "Please accept the Terms & Conditions before submitting.",
+    "termsPayment": "£80 booking payment, credited towards your labour bill. Your appointment is confirmed after availability is agreed, payment is received and we send written confirmation. Materials are extra unless agreed.",
+    "termsCancellation": "Cancellation or changes with less than 48 hours’ notice may result in retention of up to £80, limited to our reasonable direct losses. Statutory cancellation rights apply.",
+    "termsAccept": "I agree to Crowlee ART’s <link>Terms & Conditions (opens in a new tab)</link>, including the booking payment and 48-hour cancellation policy.",
+    "earlyStart": "If work starts within my applicable 14-day cooling-off period, I expressly request this early start. I understand I may pay proportionately for work supplied if I cancel, and lose my statutory cancellation right once the service is fully performed. Leave unticked if you do not request an early start.",
     "services": { "general": "General Maintenance", "plumbing": "Plumbing", "painting": "Painting & Decoration", "flooring": "Laminate Flooring", "washing": "Pressure Washing" }
   },
   "login": {
@@ -150,7 +156,8 @@
   },
   "footer": {
     "copyright": "Crowlee Art — The Art Of Maintenance — All rights reserved.",
-    "privacy": "Privacy and cookie policy"
+    "privacy": "Privacy and cookie policy",
+    "terms": "Terms & Conditions"
   },
   "cookies": {
     "title": "We use cookies",

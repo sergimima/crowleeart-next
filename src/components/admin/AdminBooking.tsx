@@ -28,6 +28,9 @@ interface Booking {
   }
   status: 'pending' | 'confirmed' | 'completed' | 'cancelled'
   imageUrl?: string
+  termsVersion?: string | null
+  termsAcceptedAt?: string | null
+  earlyStartRequested?: boolean
 }
 
 interface AdminBookingProps {
@@ -296,6 +299,31 @@ export default function AdminBooking({ bookings: initialBookings, onUpdate }: Ad
                     </div>
                   )}
                 </div>
+              </div>
+
+              {/* Terms Acceptance */}
+              <div className="space-y-3">
+                <h4 className="font-semibold text-sm text-muted-foreground uppercase tracking-wide">Terms &amp; Conditions</h4>
+                {viewingBooking.termsVersion && viewingBooking.termsAcceptedAt ? (
+                  <div className="grid gap-3">
+                    <div>
+                      <Label className="text-xs text-muted-foreground">Accepted</Label>
+                      <p className="font-medium">
+                        Version {viewingBooking.termsVersion} on {format(new Date(viewingBooking.termsAcceptedAt), 'PPP p')}
+                      </p>
+                    </div>
+                    <div>
+                      <Label className="text-xs text-muted-foreground">Early start within cooling-off period</Label>
+                      <p className="font-medium">
+                        {viewingBooking.earlyStartRequested
+                          ? 'Requested by customer'
+                          : 'Not requested – obtain a separate recorded request before starting work within 14 days'}
+                      </p>
+                    </div>
+                  </div>
+                ) : (
+                  <p className="text-sm text-muted-foreground">No terms recorded (booking made before terms were introduced).</p>
+                )}
               </div>
 
               {/* Reference Image */}
